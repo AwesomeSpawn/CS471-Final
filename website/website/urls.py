@@ -18,11 +18,52 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 
+# Landing Page View
+
+
 def landing_page(request):
-    return render(request, 'index.html')
+    return render(request, 'index_page.html')
+
+# Login Page View
+
+
+def login_page(request):
+    return render(request, 'login_page.html')
+
+# Admin Page View
+
+
+def admin_page(request):
+    return render(request, 'admin_page.html')
+
+# Forgot Password Page View
+
+
+def forgot_password_page(request):
+    return render(request, 'forgot_password_page.html')
+
+# Mechanic Page View
+
+
+def mechanic_page(request):
+    return render(request, 'mechanic_page.html')
+
+
+def service_manager_page(request):
+    return render(request, 'service_manager_page.html')
+
+
+def cashier_page(request):
+    return render(request, 'cashier_page.html')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', landing_page),
+    path('', landing_page, name='landing'),
+    path('login/', login_page, name='login'),
+    path('admin/', admin_page, name='admin'),
+    path('forgot_password/', forgot_password_page, name='forgot_password'),
+    path('mechanic/', mechanic_page, name='mechanic'),
+    path('service_manager/', service_manager_page, name='service_manager'),
+    path('cashier/', cashier_page, name='cashier'),
 ]
