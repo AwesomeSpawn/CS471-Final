@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Landing Page</title>
+  </head>
+  <body>
+    <h1>Welcome to the Landing Page</h1>
+    <nav>
+      <ul>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'admin' %}">Admin</a></li>
+        <li><a href="{% url 'forgot_password' %}">Forgot Password</a></li>
+        <li><a href="{% url 'mechanic' %}">Mechanic</a></li>
+        <li><a href="{% url 'cashier' %}">Cashier</a></li>
+        <li><a href="{% url 'service_manager' %}">Service Manager</a></li>
+      </ul>
+    </nav>
+  </body>
+</html>
