@@ -11,4 +11,6 @@ class User(models.Model):
     first_name = models.TextField(max_length=20, default="")
     last_name = models.TextField(max_length=20, default="")
 
+    def __str__(self):
+        return self.user_id
 
