@@ -1,10 +1,10 @@
 import {useState} from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import {redirect} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
-function LoginPage() {
-
+function LoginPage(props) {
+    const nav = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [invalid, setInvalid] = useState(false);
@@ -31,7 +31,10 @@ function LoginPage() {
                     'username':username,
                     'password':password
                 }).then(function (response) {
-                    Cookies.set('token', response.data['token'])
+                    Cookies.set('token', response.data['token']);
+                    props.authenticateHook(true);
+                    props.roleHook(response.data['role']);
+                    nav('/landing');
                 }).catch(setInvalid(true));
             }}>Login</button>
         </div>
