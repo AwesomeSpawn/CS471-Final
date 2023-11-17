@@ -30,12 +30,13 @@ function LoginPage(props) {
                 axios.get('https://LocalHost:8000/login', {
                     'username':username,
                     'password':password
-                }).then(function (response) {
+                }).catch(() => {console.log("problem :(")})
+                .then(function (response) {
                     Cookies.set('token', response.data['token']);
-                    props.authenticateHook(true);
+                    if (!(response.data['token'] === '')) props.authenticateHook(true);
                     props.roleHook(response.data['role']);
                     nav('/landing');
-                }).catch(setInvalid(true));
+                }).catch(() => {setInvalid(true)});
             }}>Login</button>
         </div>
     );
