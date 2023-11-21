@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.shortcuts import render
 from rest_framework import routers
 from login import views
+from login.views import UserView
 
 # Landing Page View
 
@@ -60,15 +61,18 @@ def cashier_page(request):
 
 router = routers.DefaultRouter()
 router.register(r'logins', views.UserView, 'login')
-
+router.register(r'login-api', views.UserView, 'login')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', landing_page, name='landing'),
-    path('login/', login_page, name='login'),
+    path('register', views.UserRegister.as_view(), name='register'),
+    path('login', views.UserLogin.as_view(), name='login'),
+    path('logout', views.UserLogout.as_view(), name='logout'),
+    path('user', views.UserView.as_view(), name='user'),
     path('admin/', admin_page, name='admin'),
     path('forgot_password/', forgot_password_page, name='forgot_password'),
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    path('api/', include(router.urls))
+    #path('api/', include(router.urls)),
 ]
