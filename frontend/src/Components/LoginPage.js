@@ -21,14 +21,14 @@ function LoginPage(props) {
         <div>
             <h1>Login Page</h1>
             {invalid ? <div><p>Invalid Username</p><br /></div> : <div><br /></div>}
-            <p>Username</p>
+            <p>Email</p>
             <input onChange={handleChangeUsername}></input>
             <p>Password</p>
             <input onChange={handleChangePassword}></input>
             <br></br>
             <button onClick={(event) => {
-                axios.get('https://LocalHost:8000/login', {
-                    'username':username,
+                axios.post('http://LocalHost:8000/login', {
+                    'email':username,
                     'password':password
                 }).catch(() => {console.log("problem :(")})
                 .then(function (response) {
