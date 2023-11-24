@@ -34,7 +34,7 @@ function LoginPage(props) {
                 .then(function (response) {
                     Cookies.set('token', response.data['token']);
                     if (!(response.data['token'] === '')) props.authenticateHook(true);
-                    props.roleHook(response.data['role']);
+                    props.roleHook('technician');
                     nav('/landing');
                 }).catch(() => {setInvalid(true)});
             }}>Login</button>
