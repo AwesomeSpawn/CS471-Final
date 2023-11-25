@@ -51,4 +51,6 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 	objects = AppUserManager()
 	def __str__(self):
 		return self.username
+	def is_staff(self):
+		return self.is_superuser
 
