@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./HomePage.css"; // Make sure to create a corresponding CSS file
+import "./HomePage.css";
 
 function HomePage() {
   const [inventory, setInventory] = useState([]);
@@ -9,17 +9,26 @@ function HomePage() {
   const nav = useNavigate();
 
   useEffect(() => {
-    // Replace with your actual API endpoint to fetch inventory
-    axios
-      .get("/api/inventory")
-      .then((response) => {
+    const fetchInventory = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/inventory/",
+          {
+            headers: {
+              "25af19b4-c477-499c-8ff3-486588868e23": "",
+            },
+          }
+        );
         setInventory(response.data);
         setLoading(false);
-      })
-      .catch((error) => {
+        console.log("Inventory data:", response.data);
+      } catch (error) {
         console.error("Error fetching inventory:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchInventory();
   }, []);
 
   if (loading) {
