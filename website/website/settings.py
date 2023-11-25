@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 MY_API_KEY = os.environ.get('MY_API_KEY')
+print("Loaded API Key:", MY_API_KEY)
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -142,8 +143,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
-    '25af19b4-c477-499c-8ff3-486588868e23',  # Your custom header as used in Axios
-    # Add other headers here
+    'x-api-key',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

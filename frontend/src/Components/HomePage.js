@@ -15,7 +15,7 @@ function HomePage() {
           "http://localhost:8000/api/inventory/",
           {
             headers: {
-              "25af19b4-c477-499c-8ff3-486588868e23": "",
+              "x-api-key": process.env.REACT_APP_API_KEY,
             },
           }
         );
@@ -55,15 +55,23 @@ function HomePage() {
               <th>Item</th>
               <th>Type</th>
               <th>Price</th>
+              <th>Description</th>
+              <th>Quantity</th>
+              <th>Supplier ID</th>
+              <th>Date Added</th>
               <th>Details</th>
             </tr>
           </thead>
           <tbody>
             {inventory.map((item) => (
               <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.type}</td>
+                <td>{item.item_name}</td>
+                <td>{item.item_type}</td>
                 <td>${item.price}</td>
+                <td>{item.item_description}</td>
+                <td>{item.quantity}</td>
+                <td>{item.supplier_id}</td>
+                <td>{new Date(item.date_added).toLocaleString()}</td>
                 <td>
                   <button onClick={() => nav(`/item/${item.id}`)}>View</button>
                 </td>
