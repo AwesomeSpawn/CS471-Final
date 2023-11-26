@@ -23,6 +23,10 @@ MY_API_KEY = env('MY_API_KEY')
 print("Loaded API Key:", MY_API_KEY)
 
 
+MY_API_KEY = os.environ.get('MY_API_KEY')
+print("Loaded API Key:", MY_API_KEY)
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,9 +148,14 @@ CORS_ORIGIN_WHITELIST = [
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'http://127.0.0.1:3000'
+    'http://127.0.0.1:3000',
+    'http://localhost:8000'
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'x-api-key',
+    'Content-Type',
+]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
