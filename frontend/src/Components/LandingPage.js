@@ -1,8 +1,7 @@
-import axios from "axios";
+// Remove unused imports
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
-import { useState } from "react";
 
 let technician_apps = ["jobs", "timesheet"];
 let manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
