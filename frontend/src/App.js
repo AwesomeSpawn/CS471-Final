@@ -4,6 +4,7 @@ import "./App.css";
 import HomePage from "./Components/HomePage";
 import LoginPage from "./Components/LoginPage";
 import LandingPage from "./Components/LandingPage";
+import TimesheetPage from "./Components/TimesheetPage.js";
 import JobsPage from "./Components/JobsPage";
 
 function App() {
@@ -49,14 +50,14 @@ function App() {
             }
           />
           <Route
-            path="jobs"
+            path="timesheet"
             element={
-              ["manager", "partpicker", "technician"].includes(role) ? (
-                <JobsPage />
-              ) : (
-                <Navigate to="/login" />
-              )
+              authenticated ? <TimesheetPage /> : <Navigate to="/login" />
             }
+          />
+          <Route
+            path="jobs"
+            element={authenticated ? <JobsPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </BrowserRouter>

@@ -1,7 +1,11 @@
+import React from "react";
+
 function JobsPage() {
-
-    return(<h1>Jobs Page</h1>);
-
+  return (
+    <div>
+      <h2>Jobs Page</h2>
+    </div>
+  );
 }
 
 export default JobsPage;

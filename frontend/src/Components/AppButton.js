@@ -5,11 +5,10 @@ function AppButton(props) {
   const nav = useNavigate();
   return (
     <div className="AppsButton">
-      <button>
+      <button onClick={() => nav("/" + props.route)}>
         <img
           src={require("./images/" + props.source + ".png")}
-          alt={props.source} 
-          onClick={() => nav("/" + props.route)}
+          alt={props.source}
           height={200}
           width={200}
         />

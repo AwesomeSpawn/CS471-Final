@@ -9,6 +9,10 @@ let manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
 let cashier_apps = ["timesheet"];
 // let employee_apps = ["timesheet"];
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function LandingPage(props) {
   let apps = [];
   if (props.role === "technician") apps = technician_apps;
@@ -25,7 +29,7 @@ function LandingPage(props) {
   return (
     <div className="landingPageContainer">
       <header>
-        <h1>Welcome to the Dashboard</h1>
+        <h1>Welcome to the {capitalizeFirstLetter(props.role)} Dashboard</h1>
         <button onClick={handleLogout} className="logoutButton">
           Logout
         </button>
