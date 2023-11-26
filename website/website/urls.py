@@ -19,7 +19,8 @@ from django.urls import path, include
 from django.shortcuts import render
 from rest_framework import routers
 from login import views
-from login.views import UserView
+from login.views import InventoryListView
+
 
 # Landing Page View
 
@@ -59,6 +60,7 @@ def service_manager_page(request):
 def cashier_page(request):
     return render(request, 'cashier_page.html')
 
+
 router = routers.DefaultRouter()
 router.register(r'logins', views.UserView, 'login')
 router.register(r'login-api', views.UserView, 'login')
@@ -74,5 +76,9 @@ urlpatterns = [
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    #path('api/', include(router.urls)),
+    path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
+
+
+
+    # path('api/', include(router.urls)),
 ]
