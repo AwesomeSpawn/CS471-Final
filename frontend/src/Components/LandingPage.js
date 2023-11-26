@@ -1,4 +1,4 @@
-// Remove unused imports
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
@@ -20,6 +20,9 @@ function LandingPage(props) {
   const handleLogout = () => {
     navigate("/login");
   };
+
+  // Log the role
+  console.log("Role:", props.role);
 
   return (
     <div className="landingPageContainer">

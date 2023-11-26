@@ -22,11 +22,6 @@ environ.Env.read_env()
 MY_API_KEY = env('MY_API_KEY')
 print("Loaded API Key:", MY_API_KEY)
 
-
-MY_API_KEY = os.environ.get('MY_API_KEY')
-print("Loaded API Key:", MY_API_KEY)
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
