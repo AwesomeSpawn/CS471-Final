@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
 
+let employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
 let technician_apps = ["jobs", "timesheet"];
 let manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
 let cashier_apps = ["timesheet"];
-let employee_apps = ["timesheet"];
+// let employee_apps = ["timesheet"];
 
 function LandingPage(props) {
   let apps = [];
@@ -20,9 +21,6 @@ function LandingPage(props) {
   const handleLogout = () => {
     navigate("/login");
   };
-
-  // Log the role
-  console.log("Role:", props.role);
 
   return (
     <div className="landingPageContainer">
