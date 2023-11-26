@@ -4,8 +4,10 @@ import "./App.css";
 import HomePage from "./Components/HomePage";
 import LoginPage from "./Components/LoginPage";
 import LandingPage from "./Components/LandingPage";
-import TimesheetPage from "./Components/TimesheetPage.js";
+import TimesheetPage from "./Components/TimesheetPage";
 import JobsPage from "./Components/JobsPage";
+import TimesheetManage from "./Components/TimesheetManage";
+import JobsManage from "./Components/JobsManage";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -58,6 +60,16 @@ function App() {
           <Route
             path="jobs"
             element={authenticated ? <JobsPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="timesheet-manage"
+            element={
+              authenticated ? <TimesheetManage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="jobs-manage"
+            element={authenticated ? <JobsManage /> : <Navigate to="/login" />}
           />
         </Routes>
       </BrowserRouter>
