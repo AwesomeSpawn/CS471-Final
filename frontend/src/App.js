@@ -8,6 +8,7 @@ import LandingPage from "./Components/LandingPage";
 import Cookies from 'js-cookie'
 import Jobs from './Components/Jobs';
 import IndividualJob from './Components/IndividualJob';
+import CashierInterface from './Components/CashierInterface';
 
 function App() {
   const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
@@ -25,6 +26,7 @@ function App() {
           {authenticated && <Route path='landing' element={<LandingPage role={role} authenticateHook={setAuthenticaiton}/>} />}
           {(role === 'partpicker' || role === 'technician') && <Route path='jobs' element={<Jobs jobHook={setJob} />} />}
           {(role === 'partpicker' || role === 'technician') && <Route path='individualjob' element={<IndividualJob job={currJob} />} />}
+          <Route path='cashier' element={<CashierInterface />} />
         </Routes>
       </BrowserRouter>
     </div>
