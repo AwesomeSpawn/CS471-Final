@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'login',
     'login.apps',
-    'inventory'
     'inventory',
     'jobs',
 ]
