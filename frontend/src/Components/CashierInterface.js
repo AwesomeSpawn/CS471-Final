@@ -23,13 +23,9 @@ function CashierInterface(props){
         currPartHook(event.target.value);
     }
 
-    const itemDelete = (item) =>{
-        itemHook(items.filter((subItem) => item !== subItem));
-    }
-
     const calcTotal = (item, quantity) =>{
         let myItem = items.find(i => i.ID === item.ID);
-        myItem.quantity = quantity
+        if (myItem) myItem.quantity = quantity;
 
         let myTotal = 0.0;
         for (let item of items){
@@ -38,6 +34,11 @@ function CashierInterface(props){
         }
         totalHook(myTotal);
         console.log(myTotal);
+    }
+
+    const itemDelete = (item) =>{
+        itemHook(items.filter((subItem) => item !== subItem));
+        calcTotal(item, 0);
     }
 
     return(
