@@ -10,7 +10,7 @@ from .permissions import HasAPIKey
 
 # Create your views here.
 class CreatePart(APIView):
-    permission_classes = (permissions.AllowAny,)
+    # permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = CreatePartSerializer
