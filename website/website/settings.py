@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'login',
     'login.apps',
     'inventory'
+    'inventory',
+    'jobs',
 ]
 
 MIDDLEWARE = [

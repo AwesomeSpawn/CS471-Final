@@ -8,22 +8,15 @@ import TimesheetPage from "./Components/TimesheetPage";
 import JobsPage from "./Components/JobsPage";
 import TimesheetManage from "./Components/TimesheetManage";
 import JobsManage from "./Components/JobsManage";
+import Cookies from 'js-cookie'
+import Jobs from './Components/Jobs';
+import IndividualJob from './Components/IndividualJob';
+import CashierInterface from './Components/CashierInterface';
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [role, setRole] = useState("");
-
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("authenticated");
-    if (isAuthenticated) {
-      setAuthenticated(true);
-    }
-
-    const userRole = localStorage.getItem("role");
-    if (userRole) {
-      setRole(userRole);
-    }
-  }, []);
+  const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
+  const [role, setRole] = useState('');
+  const [currJob, setJob] = useState({});
 
   return (
     <div className="App">
@@ -71,6 +64,13 @@ function App() {
             path="jobs-manage"
             element={authenticated ? <JobsManage /> : <Navigate to="/login" />}
           />
+          <Route path='home' element={<HomePage />} />
+          <Route path='*' element={<HomePage />} />
+          <Route path='login' element={<LoginPage authenticateHook={setAuthenticaiton} roleHook={setRole} />} />
+          {authenticated && <Route path='landing' element={<LandingPage role={role} authenticateHook={setAuthenticaiton}/>} />}
+          {(role === 'partpicker' || role === 'technician') && <Route path='jobs' element={<Jobs jobHook={setJob} />} />}
+          {(role === 'partpicker' || role === 'technician') && <Route path='individualjob' element={<IndividualJob job={currJob} />} />}
+          <Route path='cashier' element={<CashierInterface />} />
         </Routes>
       </BrowserRouter>
     </div>

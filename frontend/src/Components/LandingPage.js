@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
+import "./LandingPage.css";
+import Cookies from "js-cookie";
 
 let employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
 let technician_apps = ["jobs", "timesheet"];
@@ -14,12 +16,7 @@ function capitalizeFirstLetter(string) {
 }
 
 function LandingPage(props) {
-  let apps = [];
-  if (props.role === "technician") apps = technician_apps;
-  else if (props.role === "manager") apps = manager_apps;
-  else if (props.role === "cashier") apps = cashier_apps;
-  else apps = employee_apps;
-
+  const apps = [];
   const navigate = useNavigate();
 
   const handleLogout = () => {
