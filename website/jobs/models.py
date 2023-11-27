@@ -1,5 +1,6 @@
 from django.db import models
 
+# Create your models here.
 class Jobs(models.Model):
     job_id = models.IntegerField()
     job_time = models.IntegerField()

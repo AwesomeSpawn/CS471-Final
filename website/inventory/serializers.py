@@ -1,6 +1,9 @@
-from .models import Parts
+from .models import Parts, InventoryItem
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from .models import InventoryItem
+from rest_framework import serializers
+
 
 class CreatePartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -9,3 +12,8 @@ class CreatePartSerializer(serializers.ModelSerializer):
                                         quantity=validated_data['quantity'])
         part_obj.save()
         return part_obj
+
+class InventoryItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryItem
+        fields = '__all__'

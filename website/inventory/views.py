@@ -3,10 +3,15 @@ from .serializers import CreatePartSerializer
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.views import APIView
+from rest_framework import views
+from .serializers import InventoryItemSerializer
+from .models import InventoryItem
+from .permissions import HasAPIKey
 
 # Create your views here.
 class CreatePart(APIView):
     permission_classes = (permissions.AllowAny,)
+
     def post(self, request):
         serializer = CreatePartSerializer
         if serializer.is_valid(raise_exception=True):
@@ -18,3 +23,12 @@ class CreatePart(APIView):
 
 class UpdatePartQuantity:
     pass
+
+
+class InventoryListView(views.APIView):
+    permission_classes = [HasAPIKey]
+
+    def get(self, request):
+        items = InventoryItem.objects.all()
+        serializer = InventoryItemSerializer(items, many=True)
+        return Response(serializer.data)

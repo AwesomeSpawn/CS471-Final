@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+import environ
 
-MY_API_KEY = os.environ.get('MY_API_KEY')
+# Initialize environment variables
+env = environ.Env()
+# Reading .env file
+environ.Env.read_env()
+
+MY_API_KEY = env('MY_API_KEY')
 print("Loaded API Key:", MY_API_KEY)
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,7 +141,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-     'http://localhost:3000'
+    'http://localhost:3000'
 ]
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
