@@ -2,25 +2,32 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
-import "./LandingPage.css";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 let employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
 let technician_apps = ["jobs", "timesheet"];
 let manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
 let cashier_apps = ["timesheet"];
-// let employee_apps = ["timesheet"];
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function LandingPage(props) {
-  const apps = [];
   const navigate = useNavigate();
+  let apps = [];
+
+  if (props.role === "technician") apps = technician_apps;
+  else if (props.role === "manager") apps = manager_apps;
+  else if (props.role === "cashier") apps = cashier_apps;
+  else apps = employee_apps;
 
   const handleLogout = () => {
-    navigate("/login");
+    props.authenticateHook(false);
+    Cookies.remove("token");
+    axios.post("http://LocalHost:8000/logout");
+    navigate("/home");
   };
 
   return (
