@@ -24,7 +24,7 @@ function LoginPage(props) {
             <p>Email</p>
             <input onChange={handleChangeUsername}></input>
             <p>Password</p>
-            <input onChange={handleChangePassword}></input>
+            <input type='password' onChange={handleChangePassword}></input>
             <br></br>
             <button onClick={(event) => {
                 axios.post('http://LocalHost:8000/login', {
