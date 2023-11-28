@@ -9,7 +9,7 @@ import JobsPage from "./Components/JobsPage";
 import TimesheetManage from "./Components/TimesheetManage";
 import JobsManage from "./Components/JobsManage";
 import Cookies from 'js-cookie';
-import Jobs from './Components/Jobs';
+import Jobs from './Components/JobsPage';
 import IndividualJob from './Components/IndividualJob';
 import CashierInterface from './Components/CashierInterface';
 

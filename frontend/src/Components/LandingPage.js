@@ -17,11 +17,19 @@ function capitalizeFirstLetter(string) {
 function LandingPage(props) {
   const navigate = useNavigate();
   let apps = [];
-
-  if (props.role === "technician") apps = technician_apps;
-  else if (props.role === "manager") apps = manager_apps;
-  else if (props.role === "cashier") apps = cashier_apps;
-  else apps = employee_apps;
+  switch (props.role) {
+    case "technician":
+      apps = technician_apps;
+      break;
+    case "manager":
+      apps = manager_apps;
+      break;
+    case "cashier":
+      apps = cashier_apps;
+      break;
+    default:
+      apps = employee_apps;
+  }
 
   const handleLogout = () => {
     props.authenticateHook(false);
