@@ -8,7 +8,7 @@ from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerial
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password
 from rest_framework.views import APIView
-from .permissions import HasAPIKey
+#from .permissions import HasAPIKey
 from .models import InventoryItem
 
 
@@ -61,7 +61,7 @@ class UserView(APIView):
 
 
 class InventoryListView(views.APIView):
-    permission_classes = [HasAPIKey]
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get(self, request):
         items = InventoryItem.objects.all()

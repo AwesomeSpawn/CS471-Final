@@ -12,9 +12,11 @@ class UsedBikes(Product):
     make = models.CharField(max_length=100)
     vehicle_model = models.CharField(max_length=100)
     year = models.IntegerField()
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=0)
 
 class Parts(Product):
     serial_number = models.IntegerField()
     quantity = models.IntegerField()
-    amount_needed = models.IntegerField(default=0)
-    related_jobs = models.ManyToManyField('jobs.Jobs')
+    curr_amount_needed = models.IntegerField(default=0)
+    open_jobs = models.ManyToManyField('jobs.Jobs')
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=0)

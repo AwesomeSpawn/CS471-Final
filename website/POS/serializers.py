@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import POS
+from .models import Sale
 
 class POSSerializers(serializers.ModelSerializer):
     class Meta:
-        model = POS
-        fields = ['', '']
+        model = Sale
+        fields = '__all__'

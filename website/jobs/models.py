@@ -5,4 +5,4 @@ class Jobs(models.Model):
     job_time = models.IntegerField()
     assignee = models.ForeignKey('login.AppUser', on_delete=models.PROTECT)
     task_str = models.CharField(max_length=5000)
-    job_parts = models.ManyToManyField('inventory.Parts')
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0))

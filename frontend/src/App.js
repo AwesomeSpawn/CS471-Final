@@ -9,11 +9,15 @@ import Cookies from 'js-cookie'
 import Jobs from './Components/Jobs';
 import IndividualJob from './Components/IndividualJob';
 import CashierInterface from './Components/CashierInterface';
+import axios from 'axios';
 
 function App() {
   const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
   const [currJob, setJob] = useState({});
+
+  axios.get('http://localhost:8000/pos').catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
+  .catch(error => console.log('initCatch: ' + error));
 
   return (
     <div className="App">
