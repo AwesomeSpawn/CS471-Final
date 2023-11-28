@@ -20,7 +20,7 @@ from django.shortcuts import render
 from rest_framework import routers
 from login import views
 from login.views import InventoryListView
-
+from POS import views
 
 # Landing Page View
 
@@ -77,7 +77,7 @@ urlpatterns = [
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
-
+    path("POS/", views.POSList)
 
 
     # path('api/', include(router.urls)),
