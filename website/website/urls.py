@@ -15,11 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.shortcuts import render
 from rest_framework import routers
 from login import views
-from inventory.views import InventoryListView
+from inventory.views import CreatePart
 
 
 # Landing Page View
@@ -76,8 +76,7 @@ urlpatterns = [
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
-
+    path('inventory', CreatePart.as_view(), name='inventory_create'),
 
 
     # path('api/', include(router.urls)),

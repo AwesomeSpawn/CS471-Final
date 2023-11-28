@@ -12,11 +12,14 @@ import Cookies from 'js-cookie';
 import Jobs from './Components/Jobs';
 import IndividualJob from './Components/IndividualJob';
 import CashierInterface from './Components/CashierInterface';
+import axios from "axios";
 
 function App() {
   const [authenticated, setAuthentication] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
   const [currJob, setJob] = useState({});
+
+  console.log(axios.post('http://LocalHost:8000/inventory', {'name':'partI', 'serial_number':112, 'quantity':12}));
 
   useEffect(() => {
     if (!authenticated) {
