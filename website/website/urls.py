@@ -77,6 +77,12 @@ urlpatterns = [
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
+    path('api/user_data/<str:email>/', views.get_user_data, name='get_user_data'),
+    path('api/jobs/<str:email>/', views.get_user_jobs, name='get_user_jobs'),
+    path('api/timesheets/<str:email>/',
+         views.get_user_timesheets, name='get_user_timesheets'),
+
+
 
 
 

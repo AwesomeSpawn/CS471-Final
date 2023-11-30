@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
@@ -17,6 +17,8 @@ function capitalizeFirstLetter(string) {
 
 function LandingPage(props) {
   const navigate = useNavigate();
+  const [userJobs, setUserJobs] = useState([]);
+  const [userTimesheets, setUserTimesheets] = useState([]);
 
   // Function to handle user logout
   const handleLogout = () => {
@@ -27,14 +29,26 @@ function LandingPage(props) {
     navigate("/home");
   };
 
-  // Fetch the user data from cookies and console log it
   useEffect(() => {
     const userDataString = Cookies.get("userInfo");
     if (userDataString) {
       const userData = JSON.parse(userDataString);
-      console.log("User Data from Cookies:", userData);
+
+      const encodedEmail = encodeURIComponent(userData.email);
+      console.log("Decoded email:", decodeURIComponent(encodedEmail));
+      console.log("User Data:", userData);
+
+
+      axios
+        .get(`http://LocalHost:8000/api/user_data/${encodedEmail}`)
+        .then((response) => {
+          console.log("User Data from API:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
     } else {
-      console.log("No user data found in cookies.");
+      // ... handle no user data ...
     }
   }, []);
 

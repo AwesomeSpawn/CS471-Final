@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'login.apps',
     'inventory',
     'jobs',
+    'timesheet',
 ]
 
 MIDDLEWARE = [

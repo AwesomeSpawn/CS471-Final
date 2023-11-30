@@ -3,12 +3,21 @@ from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .models import AppUser
 from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
 from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from jobs.models import Jobs
+from timesheet.models import Timesheet
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import permission_classes
+import urllib.parse
+
 
 # Ensure you have a serializer for the User model
 from .serializers import UserSerializer
@@ -75,3 +84,44 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+
+@permission_classes([permissions.AllowAny])
+def get_user_data(request, email):
+    try:
+        decoded_email = urllib.parse.unquote(email)  # Decode the email
+        user = AppUser.objects.get(email=decoded_email)
+
+        # Query for Jobs and Timesheet
+        jobs = Jobs.objects.filter(assignee=user).values(
+            'job_id', 'job_time', 'task_str', 'job_parts')
+        timesheets = Timesheet.objects.filter(employee_id=user.user_id).values(
+            'hours', 'start_date', 'timesheet_id')
+
+        return JsonResponse({
+            'jobs': list(jobs),
+            'timesheets': list(timesheets)
+        })
+
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
+
+def get_user_jobs(request, email):
+    decoded_email = urllib.parse.unquote(email)
+    try:
+        user = AppUser.objects.get(email=decoded_email)
+        jobs = Jobs.objects.filter(assignee=user).values()
+        return JsonResponse({'jobs': list(jobs)})
+    except AppUser.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
+
+def get_user_timesheets(request, email):
+    decoded_email = urllib.parse.unquote(email)
+    try:
+        user = AppUser.objects.get(email=decoded_email)
+        timesheets = Timesheet.objects.filter(
+            employee_id=user.user_id).values()
+        return JsonResponse({'timesheets': list(timesheets)})
+    except AppUser.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
