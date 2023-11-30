@@ -1,11 +1,11 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 
 class Sale(models.Model):
     id = models.IntegerField(primary_key=True)
     cost = models.FloatField()
-    credit_card = models.IntegerField(max_length=16)
-    CVC = models.IntegerField(max_length=3)
-    validMonth = models.IntegerField(MaxValueValidator(12), MinValueValidator(1))
-    ValidDay = models.IntegerField(MaxValueValidator(31), MinValueValidator(1))
-    nameOnCard = models.CharField(max_length=50)
+    credit_card = models.CharField(default='0000000000000000', max_length=16, validators=[RegexValidator(regex=r'^[0-9]+$', message='Only numeric characters are allowed.')])
+    CVC = models.CharField(default='000', max_length=3, validators=[RegexValidator(regex=r'^[0-9]+$', message='Only numeric characters are allowed.')])
+    nameOnCard = models.CharField(default='John Doe', max_length=50)
+    validMonth = models.PositiveBigIntegerField(default='1', validators=[MaxValueValidator(12)])
+    ValidDay = models.PositiveBigIntegerField(default='1', validators=[MaxValueValidator(31)])
