@@ -47,10 +47,15 @@ class UserLogin(APIView):
         assert validate_email(data)
         assert validate_password(data)
         serializer = UserLoginSerializer(data=data)
+
         if serializer.is_valid(raise_exception=True):
             user = serializer.check_user(data)
             login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            user_data = UserSerializer(user).data
+            return Response({
+                'token': serializer.data.get('token'),
+                'user_info': user_data
+            }, status=status.HTTP_200_OK)
 
 
 class UserLogout(APIView):
