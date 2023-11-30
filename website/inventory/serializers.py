@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model, authenticate
 from .models import InventoryItem
 
 
-class CreatePartSerializer(serializers.ModelSerializer):
+class PartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         part_obj = Parts.objects.create(product_name=validated_data['name'],
                                         serial_number=validated_data['serial_number'],
