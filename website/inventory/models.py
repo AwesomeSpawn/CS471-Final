@@ -18,5 +18,5 @@ class Parts(Product):
     serial_number = models.IntegerField()
     quantity = models.IntegerField()
     curr_amount_needed = models.IntegerField(default=0)
-    open_jobs = models.ManyToManyField('jobs.Jobs')
-    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=0)
+    open_jobs = models.ManyToManyField('jobs.Jobs', default=None)
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=None, null=True)

@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.shortcuts import render
 from rest_framework import routers
 from login import views
-from login.views import InventoryListView
+from inventory import views as invV
 from POS import views as POSV
 
 # Landing Page View
@@ -76,7 +76,7 @@ urlpatterns = [
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
+    path('api/inventory/create', invV.CreatePart.as_view(), name='inventory_create'),
     path('pos', POSV.POSList, name='POS-system')
 
 
