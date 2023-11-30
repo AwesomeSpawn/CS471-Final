@@ -1,5 +1,4 @@
 from rest_framework import status, views
-from .serializers import InventoryItemSerializer
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
@@ -9,7 +8,6 @@ from rest_framework import permissions, status
 from .validations import custom_validation, validate_email, validate_password
 from rest_framework.views import APIView
 #from .permissions import HasAPIKey
-from .models import InventoryItem
 
 
 class UserRegister(APIView):
@@ -58,12 +56,3 @@ class UserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
-
-
-class InventoryListView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated,]
-
-    def get(self, request):
-        items = InventoryItem.objects.all()
-        serializer = InventoryItemSerializer(items, many=True)
-        return Response(serializer.data)

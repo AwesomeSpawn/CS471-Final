@@ -11,7 +11,7 @@ from rest_framework import status, permissions
 @permission_classes([permissions.AllowAny])
 def POSList(request):
     if request.method == 'GET':
-        sales = list(Sale.objects.all())
+        sales = Sale.objects.all()
         serializer = POSSerializers(data=sales, many=True)
         if serializer.is_valid():
             return Response(serializer.data, status=status.HTTP_200_OK)

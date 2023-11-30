@@ -14,9 +14,9 @@ import axios from 'axios';
 function App() {
   const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
-  const [currJob, setJob] = useState({});
+  const [currJob, setJob] = useState('');
 
-  axios.get('http://localhost:8000/pos').catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
+  axios.post('http://localhost:8000/api/inventory/create', {'product_name':'Part I', 'serial_number':55555, 'quantity':4, 'product_id':123, 'cost':50.5}).catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
   .catch(error => console.log('initCatch: ' + error));
 
   return (
