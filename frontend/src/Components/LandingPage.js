@@ -5,10 +5,10 @@ import "./LandingPage.css";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-const employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
+const employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage", "cashier"];
 const technician_apps = ["jobs", "timesheet"];
 const manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
-const cashier_apps = ["timesheet"];
+const cashier_apps = ["timesheet", "cashier"]; 
 
 function capitalizeFirstLetter(string) {
   if (!string) return "";
@@ -17,7 +17,7 @@ function capitalizeFirstLetter(string) {
 
 function LandingPage(props) {
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState("employee"); // Default role set to 'employee'
+  const [userRole, setUserRole] = useState("employee"); 
 
   // Function to handle user logout
   const handleLogout = () => {
@@ -40,7 +40,7 @@ function LandingPage(props) {
         .get(`/api/user_data/${encodedEmail}`)
         .then((response) => {
           console.log("User Data from API:", response.data);
-          setUserRole(response.data.user_role); // Set the user role using state setter
+          setUserRole(response.data.user_role); 
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
