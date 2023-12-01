@@ -17,12 +17,13 @@ function capitalizeFirstLetter(string) {
 
 function LandingPage(props) {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState("employee"); // Default role set to 'employee'
 
   // Function to handle user logout
   const handleLogout = () => {
     props.authenticateHook(false);
     Cookies.remove("token");
-    Cookies.remove("userInfo"); // Ensure to remove userInfo cookie on logout
+    Cookies.remove("userInfo"); 
     axios.post("/logout");
     navigate("/home");
   };
@@ -31,7 +32,6 @@ function LandingPage(props) {
     const userDataString = Cookies.get("userInfo");
     if (userDataString) {
       const userData = JSON.parse(userDataString);
-
       const encodedEmail = encodeURIComponent(userData.email);
       console.log("Decoded email:", decodeURIComponent(encodedEmail));
       console.log("User Data:", userData);
@@ -40,6 +40,7 @@ function LandingPage(props) {
         .get(`/api/user_data/${encodedEmail}`)
         .then((response) => {
           console.log("User Data from API:", response.data);
+          setUserRole(response.data.user_role); // Set the user role using state setter
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
@@ -51,7 +52,7 @@ function LandingPage(props) {
 
   // Determine which apps to show based on user role
   let apps = [];
-  switch (props.role) {
+  switch (userRole) {
     case "technician":
       apps = technician_apps;
       break;
@@ -68,7 +69,7 @@ function LandingPage(props) {
   return (
     <div className="landingPageContainer">
       <header>
-        <h1>Welcome to the {capitalizeFirstLetter(props.role)} Dashboard</h1>
+        <h1>Welcome to the {capitalizeFirstLetter(userRole)} Dashboard</h1>
         <button onClick={handleLogout} className="logoutButton">
           Logout
         </button>

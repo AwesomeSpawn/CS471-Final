@@ -85,6 +85,7 @@ class UserView(APIView):
         serializer = UserSerializer(request.user)
         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
 
+
 @permission_classes([permissions.AllowAny])
 def get_user_data(request, email):
     try:
@@ -97,7 +98,11 @@ def get_user_data(request, email):
         timesheets = Timesheet.objects.filter(employee_id=user.user_id).values(
             'hours', 'start_date', 'timesheet_id')
 
+        # Include user role in the response
+        user_role = user.role
+
         return JsonResponse({
+            'user_role': user_role,  # Add user role here
             'jobs': list(jobs),
             'timesheets': list(timesheets)
         })
