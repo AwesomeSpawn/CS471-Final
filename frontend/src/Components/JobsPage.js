@@ -1,69 +1,80 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./JobsPage.css"; // Ensure this path is correct
+import Cookies from "js-cookie";
+import "./JobsPage.css";
+
+function JobCard({ job, onJobSelect }) {
+  return (
+    <div className="jobCard" onClick={() => onJobSelect(job)}>
+      <h3>Job ID: {job.job_id}</h3>
+      <p>Task: {job.task_str}</p>
+      {/* Add more job details here */}
+    </div>
+  );
+}
 
 function Jobs({ token, jobHook }) {
-    const [jobs, setJobs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const nav = useNavigate();
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const nav = useNavigate();
 
-    useEffect(() => {
-        if (!document.cookie) {
-            // Handle scenario when there is no cookie
-            setError('You must be logged in to view jobs.');
-            setLoading(false);
-            return;
-        }
+  useEffect(() => {
+    const userDataString = Cookies.get("userInfo");
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      const encodedEmail = encodeURIComponent(userData.email);
 
-        // Fake data for testing
-        const fakeJobs = [
-            { job_id: 1, task_str: "Fixing electrical issue" },
-            { job_id: 2, task_str: "Routine maintenance" },
-            { job_id: 3, task_str: "Software update" },
-            // Add more fake job objects as needed
-        ];
+      axios
+        .get(`/api/jobs/${encodedEmail}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          setJobs(response.data.jobs || []);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError("No jobs available or error fetching jobs");
+          setLoading(false);
+        });
+    } else {
+      setError("You must be logged in to view jobs.");
+      setLoading(false);
+    }
+  }, [token]);
 
-        setJobs(fakeJobs);
-        setLoading(false);
+  if (loading) return <div className="loadingIndicator">Loading jobs...</div>;
+  if (error) return <div className="error">{error}</div>;
 
-        // Comment out the actual API call during testing with fake data
-        /*
-        axios
-            .get("http://LocalHost:8000/api/jobs", { // Adjust the URL to your API endpoint
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => {
-                setJobs(response.data.jobs || []);
-                setLoading(false);
-            })
-            .catch((error) => {
-                setError("No jobs available or error fetching jobs");
-                setLoading(false);
-            });
-        */
-    }, [token]);
+  // Function to navigate back to the landing page
+  const goBack = () => {
+    nav(-1); // This will take the user back to the previous page
+  };
 
-    if (loading) return <p>Loading jobs...</p>;
-    if (error) return <p>{error}</p>;
-
-    return (
-        <div className="jobsContainer">
-            {jobs.map((job) => (
-                <button
-                    key={job.job_id}
-                    className="jobButton"
-                    onClick={() => {
-                        jobHook(job);
-                        nav("/individualjob");
-                    }}
-                >
-                    {`Job ID: ${job.job_id}, Task: ${job.task_str}`}
-                </button>
-            ))}
-        </div>
-    );
+  return (
+    <div className="landingPageContainer">
+      <header className="jobsHeader">
+        <h1>Job Assignments</h1>
+        <button onClick={goBack} className="backButton">
+          Back
+        </button>{" "}
+        {/* Back button */}
+      </header>
+      <div className="appWrapper">
+        {jobs.map((job) => (
+          <JobCard
+            key={job.job_id}
+            job={job}
+            onJobSelect={() => {
+              jobHook(job);
+              nav("/individualjob");
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Jobs;

@@ -17,15 +17,13 @@ function capitalizeFirstLetter(string) {
 
 function LandingPage(props) {
   const navigate = useNavigate();
-  const [userJobs, setUserJobs] = useState([]);
-  const [userTimesheets, setUserTimesheets] = useState([]);
 
   // Function to handle user logout
   const handleLogout = () => {
     props.authenticateHook(false);
     Cookies.remove("token");
     Cookies.remove("userInfo"); // Ensure to remove userInfo cookie on logout
-    axios.post("http://LocalHost:8000/logout");
+    axios.post("/logout");
     navigate("/home");
   };
 
@@ -38,9 +36,8 @@ function LandingPage(props) {
       console.log("Decoded email:", decodeURIComponent(encodedEmail));
       console.log("User Data:", userData);
 
-
       axios
-        .get(`http://LocalHost:8000/api/user_data/${encodedEmail}`)
+        .get(`/api/user_data/${encodedEmail}`)
         .then((response) => {
           console.log("User Data from API:", response.data);
         })

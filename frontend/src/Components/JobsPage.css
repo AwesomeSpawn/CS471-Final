@@ -1,21 +1,49 @@
 .jobsContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.jobsHeader {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.jobButton {
-  background-color: #007bff;
+.jobCard {
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.jobCard:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.jobCard:hover {
+  transform: scale(1.05);
+}
+
+.loadingIndicator,
+.error {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.backButton {
+  background-color: black;
   color: white;
   border: none;
-  border-radius: 5px;
   padding: 10px 20px;
-  margin: 10px 0;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.jobButton:hover {
-  background-color: #0056b3;
+.backButton:hover {
+  background-color: #d32f2f;
 }
