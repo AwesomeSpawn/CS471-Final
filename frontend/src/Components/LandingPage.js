@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
 import Cookies from "js-cookie";
-import axios from "axios";
 
 const employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
 const technician_apps = ["jobs", "timesheet"];
@@ -20,12 +19,11 @@ function LandingPage(props) {
   const [userJobs, setUserJobs] = useState([]);
   const [userTimesheets, setUserTimesheets] = useState([]);
 
-  // Function to handle user logout
   const handleLogout = () => {
     props.authenticateHook(false);
     Cookies.remove("token");
-    Cookies.remove("userInfo"); // Ensure to remove userInfo cookie on logout
-    axios.post("http://LocalHost:8000/logout");
+    Cookies.remove("userInfo");
+    fetch("http://localhost:8000/logout", { method: "POST" });
     navigate("/home");
   };
 
@@ -33,26 +31,31 @@ function LandingPage(props) {
     const userDataString = Cookies.get("userInfo");
     if (userDataString) {
       const userData = JSON.parse(userDataString);
-
       const encodedEmail = encodeURIComponent(userData.email);
-      console.log("Decoded email:", decodeURIComponent(encodedEmail));
-      console.log("User Data:", userData);
 
-
-      axios
-        .get(`http://LocalHost:8000/api/user_data/${encodedEmail}`)
+      fetch(`http://localhost:8000/api/user_data/${encodedEmail}`, {
+        method: "GET",
+        credentials: "include", // Correct
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
         .then((response) => {
-          console.log("User Data from API:", response.data);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("User Data from API:", data);
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
-    } else {
-      // ... handle no user data ...
     }
   }, []);
 
-  // Determine which apps to show based on user role
   let apps = [];
   switch (props.role) {
     case "technician":

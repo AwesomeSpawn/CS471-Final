@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import "./JobsPage.css"; // Ensure this path is correct
 
 function Jobs({ token, jobHook }) {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
