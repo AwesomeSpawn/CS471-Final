@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./JobsPage.css";
 
-function JobCard({ job, onJobSelect }) {
+function JobRow({ job, onJobSelect }) {
   return (
-    <div className="jobCard" onClick={() => onJobSelect(job)}>
-      <h3>Job ID: {job.job_id}</h3>
-      <p>Task: {job.task_str}</p>
-      {/* Add more job details here */}
-    </div>
+    <tr className="jobRow" onClick={() => onJobSelect(job)}>
+      <td>{job.job_id}</td>
+      <td>{job.task_str}</td>
+      {/* Add more job details in additional table cells */}
+    </tr>
   );
 }
 
@@ -47,9 +47,8 @@ function Jobs({ token, jobHook }) {
   if (loading) return <div className="loadingIndicator">Loading jobs...</div>;
   if (error) return <div className="error">{error}</div>;
 
-  // Function to navigate back to the landing page
   const goBack = () => {
-    nav(-1); // This will take the user back to the previous page
+    nav(-1);
   };
 
   return (
@@ -58,20 +57,30 @@ function Jobs({ token, jobHook }) {
         <h1>Job Assignments</h1>
         <button onClick={goBack} className="backButton">
           Back
-        </button>{" "}
-        {/* Back button */}
+        </button>
       </header>
-      <div className="appWrapper">
-        {jobs.map((job) => (
-          <JobCard
-            key={job.job_id}
-            job={job}
-            onJobSelect={() => {
-              jobHook(job);
-              nav("/individualjob");
-            }}
-          />
-        ))}
+      <div className="tableContainer">
+        <table className="jobsTable">
+          <thead>
+            <tr>
+              <th>Job ID</th>
+              <th>Task</th>
+              {/* Add more header cells for additional job details */}
+            </tr>
+          </thead>
+          <tbody>
+            {jobs.map((job) => (
+              <JobRow
+                key={job.job_id}
+                job={job}
+                onJobSelect={() => {
+                  jobHook(job);
+                  nav("/individualjob");
+                }}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
