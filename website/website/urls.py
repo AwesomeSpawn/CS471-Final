@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
 from rest_framework import routers
-from login import views
+from login import views as login_views
+from jobs import views as jobs_views
 from inventory.views import InventoryListView
 
 
@@ -62,25 +63,29 @@ def cashier_page(request):
 
 
 router = routers.DefaultRouter()
-router.register(r'logins', views.UserView, 'login')
-router.register(r'login-api', views.UserView, 'login')
+router.register(r'logins', login_views.UserView, 'login')
+router.register(r'login-api', login_views.UserView, 'login')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', landing_page, name='landing'),
-    path('register', views.UserRegister.as_view(), name='register'),
-    path('login', views.UserLogin.as_view(), name='login'),
-    path('logout', views.UserLogout.as_view(), name='logout'),
-    path('user', views.UserView.as_view(), name='user'),
+    path('register', login_views.UserRegister.as_view(), name='register'),
+    path('login', login_views.UserLogin.as_view(), name='login'),
+    path('logout', login_views.UserLogout.as_view(), name='logout'),
+    path('user', login_views.UserView.as_view(), name='user'),
     path('admin/', admin_page, name='admin'),
     path('forgot_password/', forgot_password_page, name='forgot_password'),
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
-    path('api/user_data/<str:email>/', views.get_user_data, name='get_user_data'),
-    path('api/jobs/<str:email>/', views.get_user_jobs, name='get_user_jobs'),
+    path('api/user_data/<str:email>/', login_views.get_user_data, name='get_user_data'),
+    path('api/jobs/<str:email>/', login_views.get_user_jobs, name='get_user_jobs'),
     path('api/timesheets/<str:email>/',
-         views.get_user_timesheets, name='get_user_timesheets'),
+         login_views.get_user_timesheets, name='get_user_timesheets'),
+    path('api/get_employees', login_views.get_employees, name='get_employees'),
+    path('api/get_jobs', jobs_views.get_jobs, name='get_jobs'),
+    path('api/assign_job', jobs_views.assign_job, name='assign_job'),
+    path('api/create_job', jobs_views.create_job, name='create_job'),
 
 
 

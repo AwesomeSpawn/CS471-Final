@@ -13,12 +13,12 @@ const ManagePage = () => {
   // Fetch jobs and employees data
   useEffect(() => {
     axios
-      .get("/api/jobs")
+      .get("/api/get_jobs")
       .then((response) => setJobs(response.data))
       .catch((error) => console.error("Error fetching jobs", error));
 
     axios
-      .get("/api/employees")
+      .get("/api/get_employees")
       .then((response) => setEmployees(response.data))
       .catch((error) => console.error("Error fetching employees", error));
   }, []);
@@ -43,7 +43,7 @@ const ManagePage = () => {
     e.preventDefault();
     axios
       .post("/api/create_job", {
-        task_str: newJobDescription
+        task_str: newJobDescription,
       })
       .then((response) => {
         alert("Job created successfully!");
@@ -59,17 +59,27 @@ const ManagePage = () => {
       <form onSubmit={handleAssignJob}>
         <label>
           Job:
-          <select value={selectedJob} onChange={(e) => setSelectedJob(e.target.value)}>
+          <select
+            value={selectedJob}
+            onChange={(e) => setSelectedJob(e.target.value)}
+          >
             {jobs.map((job) => (
-              <option key={job.job_id} value={job.job_id}>{job.task_str}</option>
+              <option key={job.job_id} value={job.job_id}>
+                {job.task_str}
+              </option>
             ))}
           </select>
         </label>
         <label>
           Employee:
-          <select value={selectedEmployee} onChange={(e) => setSelectedEmployee(e.target.value)}>
+          <select
+            value={selectedEmployee}
+            onChange={(e) => setSelectedEmployee(e.target.value)}
+          >
             {employees.map((employee) => (
-              <option key={employee.id} value={employee.id}>{employee.name}</option>
+              <option key={employee.user_id} value={employee.user_id}>
+                {employee.first_name} {employee.last_name}
+              </option>
             ))}
           </select>
         </label>
@@ -80,10 +90,10 @@ const ManagePage = () => {
       <form onSubmit={handleCreateJob}>
         <label>
           Job Description:
-          <input 
-            type="text" 
-            value={newJobDescription} 
-            onChange={(e) => setNewJobDescription(e.target.value)} 
+          <input
+            type="text"
+            value={newJobDescription}
+            onChange={(e) => setNewJobDescription(e.target.value)}
             required
           />
         </label>

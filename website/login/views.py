@@ -21,6 +21,7 @@ import urllib.parse
 
 # Ensure you have a serializer for the User model
 from .serializers import UserSerializer
+from django.views.decorators.http import require_http_methods
 
 
 class LoggedInUserView(APIView):
@@ -130,3 +131,14 @@ def get_user_timesheets(request, email):
         return JsonResponse({'timesheets': list(timesheets)})
     except AppUser.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+
+# Endpoint to get list of employees
+
+
+@require_http_methods(["GET"])
+def get_employees(request):
+    employees = AppUser.objects.filter(employee=True).values(
+        'user_id', 'email', 'username', 'first_name', 'last_name', 'role')
+    return JsonResponse(list(employees), safe=False)
+
+
