@@ -10,6 +10,10 @@ const ManagePage = () => {
   const [selectedJob, setSelectedJob] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [newJobDescription, setNewJobDescription] = useState("");
+  const [newJobTime, setNewJobTime] = useState("");
+  const [assigneeId, setAssigneeId] = useState("");
+  const [jobParts, setJobParts] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,12 +57,22 @@ const ManagePage = () => {
       });
   };
 
+  const doesJobIdExist = (jobId) => {
+    return jobs.some((job) => job.job_id.toString() === jobId);
+  };
+
   const handleCreateJob = (e) => {
     e.preventDefault();
+    if (doesJobIdExist(newJobId)) {
+      alert("Job ID already exists!");
+      return;
+    }
     axios
       .post("/api/create_job", {
         job_id: newJobId,
         task_str: newJobDescription,
+        job_time: newJobTime,
+        assignee: assigneeId,
       })
       .then((response) => {
         alert("Job created successfully!");
@@ -113,17 +127,24 @@ const ManagePage = () => {
             />
           </label>
           <label className="label">
-            Job Description:
+            Job Time:
             <input
-              id="newJobDescription"
-              name="newJobDescription"
-              type="text"
-              value={newJobDescription}
-              className="inputField"
-              onChange={(e) => setNewJobDescription(e.target.value)}
+              type="number"
+              value={newJobTime}
+              onChange={(e) => setNewJobTime(e.target.value)}
               required
             />
           </label>
+          <label className="label">
+            Assignee ID:
+            <input
+              type="number"
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              required
+            />
+          </label>
+
           <button type="submit">Create Job</button>
         </form>
       </div>
@@ -157,7 +178,7 @@ const ManagePage = () => {
               onChange={(e) => setSelectedEmployee(e.target.value)}
             >
               {employees.map((employee) => (
-                <option key={employee.id} value={employee.id}>
+                <option key={employee.user_id} value={employee.username}>
                   {employee.username}
                 </option>
               ))}
