@@ -16,12 +16,12 @@ class InventoryItem(models.Model):
     def __str__(self):
         return self.item_name
 class Product(models.Model):
-    product_id = models.IntegerField()
+    product_id = models.IntegerField(primary_key=True)
     product_name = models.CharField(max_length=100)
     cost = models.FloatField()
 
 class UsedBikes(Product):
-    vehicle_id = models.IntegerField()
+    vehicle_id = models.IntegerField(primary_key=True)
     license_plate = models.CharField(max_length=20)
     vin = models.CharField(max_length=30)
     make = models.CharField(max_length=100)

@@ -77,7 +77,8 @@ urlpatterns = [
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/create', invV.CreatePart.as_view(), name='inventory_create'),
-    path('pos', POSV.POSList, name='POS-system')
+    path('pos', POSV.POSList, name='POS-system'),
+    path('api/inventory/addparts', invV.UpdatePartQuantity.as_view(), name='add_inventory')
 
 
     # path('api/', include(router.urls)),

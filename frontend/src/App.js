@@ -10,14 +10,16 @@ import Jobs from './Components/Jobs';
 import IndividualJob from './Components/IndividualJob';
 import CashierInterface from './Components/CashierInterface';
 import axios from 'axios';
+import SalesManager from './Components/SalesManager';
 
 function App() {
   const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
   const [currJob, setJob] = useState('');
 
-  axios.post('http://localhost:8000/api/inventory/create', {'product_name':'Part I', 'serial_number':55555, 'quantity':4, 'product_id':123, 'cost':50.5}).catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
-  .catch(error => console.log('initCatch: ' + error));
+  //axios.post('http://localhost:8000/api/inventory/create', {'product_name':'Part I', 'serial_number':55555, 'quantity':4, 'product_id':123, 'cost':50.5}).catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
+  //.catch(error => console.log('initCatch: ' + error));
+  //axios.post('http://localhost:8000/api/inventory/addparts', {'product_id':123, 'change':53});
 
   return (
     <div className="App">
@@ -31,6 +33,7 @@ function App() {
           {(role === 'partpicker' || role === 'technician') && <Route path='jobs' element={<Jobs jobHook={setJob} />} />}
           {(role === 'partpicker' || role === 'technician') && <Route path='individualjob' element={<IndividualJob job={currJob} />} />}
           <Route path='cashier' element={<CashierInterface />} />
+          <Route path='pos' element={<SalesManager />} />
         </Routes>
       </BrowserRouter>
     </div>

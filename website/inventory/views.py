@@ -4,8 +4,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.views import APIView
 from rest_framework import views
-from .serializers import InventoryItemSerializer
-from .models import InventoryItem, Parts
+from .models import Parts
 #from .permissions import HasAPIKey
 
 # Create your views here.
@@ -21,17 +20,19 @@ class CreatePart(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdatePartQuantityByOne:
+class UpdatePartQuantity(APIView):
+    permission_classes = (permissions.AllowAny,)
     def post(self, request):
         part = Parts.objects.get(product_id=request.data['product_id'])
-        part.quantity = part.quantity + 1
-        part.save()
+        part.quantity = part.quantity + int(request.data['change'])
+        
         if part:
-            return Response(status=status.HTTP_201_CREATED)
+            part.save()
+            return Response(status=status.HTTP_201_CREATED)     
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
+"""
 class InventoryListView(views.APIView):
     #permission_classes = [HasAPIKey]
 
@@ -39,3 +40,4 @@ class InventoryListView(views.APIView):
         items = InventoryItem.objects.all()
         serializer = InventoryItemSerializer(items, many=True)
         return Response(serializer.data)
+"""

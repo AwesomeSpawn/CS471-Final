@@ -12,12 +12,13 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Jobs',
+            name='Timesheet',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('job_id', models.IntegerField()),
-                ('job_time', models.IntegerField()),
-                ('task_str', models.CharField(max_length=5000)),
+                ('hours', models.IntegerField()),
+                ('start_date', models.DateTimeField()),
+                ('employee_id', models.IntegerField()),
+                ('timesheet_id', models.IntegerField()),
             ],
         ),
     ]
