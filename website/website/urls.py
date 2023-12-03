@@ -21,6 +21,8 @@ from rest_framework import routers
 from login import views as login_views
 from jobs import views as jobs_views
 from inventory.views import InventoryListView
+from inventory.views import CreatePart, UpdatePartQuantity
+from POS.views import POSList
 
 
 # Landing Page View
@@ -86,7 +88,9 @@ urlpatterns = [
     path('api/get_jobs', jobs_views.get_jobs, name='get_jobs'),
     path('api/assign_job', jobs_views.assign_job, name='assign_job'),
     path('api/create_job', jobs_views.create_job, name='create_job'),
-
+    path('api/inventory/create', CreatePart.as_view(), name='inventory_create'),
+    path('pos', POSList, name='POS-system'),
+    path('api/inventory/addparts', UpdatePartQuantity.as_view(), name='add_inventory')
 
 
 
