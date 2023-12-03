@@ -16,20 +16,22 @@ class InventoryItem(models.Model):
     def __str__(self):
         return self.item_name
 class Product(models.Model):
-    product_id = models.IntegerField()
+    product_id = models.IntegerField(primary_key=True)
     product_name = models.CharField(max_length=100)
     cost = models.FloatField()
 
 class UsedBikes(Product):
-    vehicle_id = models.IntegerField()
+    vehicle_id = models.IntegerField(primary_key=True)
     license_plate = models.CharField(max_length=20)
     vin = models.CharField(max_length=30)
     make = models.CharField(max_length=100)
     vehicle_model = models.CharField(max_length=100)
     year = models.IntegerField()
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=0)
 
 class Parts(Product):
     serial_number = models.IntegerField()
     quantity = models.IntegerField()
-    amount_needed = models.IntegerField(default=0)
-    related_jobs = models.ManyToManyField('jobs.Jobs')
+    curr_amount_needed = models.IntegerField(default=0)
+    open_jobs = models.ManyToManyField('jobs.Jobs', default=None)
+    sale = models.ForeignKey('POS.Sale', on_delete=models.SET(0), default=None, null=True)
