@@ -20,7 +20,6 @@ from django.shortcuts import render
 from rest_framework import routers
 from login import views as login_views
 from jobs import views as jobs_views
-from inventory.views import InventoryListView
 from inventory.views import CreatePart, UpdatePartQuantity
 from POS.views import POSList
 
@@ -79,7 +78,6 @@ urlpatterns = [
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
     path('api/user_data/<str:email>/', login_views.get_user_data, name='get_user_data'),
     path('api/jobs/<str:email>/', login_views.get_user_jobs, name='get_user_jobs'),
     path('api/timesheets/<str:email>/',
