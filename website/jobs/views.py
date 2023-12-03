@@ -1,26 +1,36 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+
+from inventory.models import Parts
 from .models import Jobs
 from login.models import AppUser
 from django.views.decorators.http import require_http_methods
 import json
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 
 
+@csrf_exempt
 @require_http_methods(["GET"])
 def get_jobs(request):
-    # Define the fields to be retrieved
-    fields = ['id']
+    jobs = Jobs.objects.all()
 
-    # Retrieve all Jobs objects, selecting only the specified fields
-    jobs = Jobs.objects.all().values(*fields)
+    jobs_data = []
+    for job in jobs:
+        job_data = {
+            'job_id': job.job_id,
+            'job_time': job.job_time,
+            'assignee_id': job.assignee_id if job.assignee else None,
+            'task_str': job.task_str,
+            'job_parts': list(job.job_parts.values_list('id', flat=True)),
+        }
+        jobs_data.append(job_data)
 
-    # Return the jobs as a JSON response
-    return JsonResponse(list(jobs), safe=False)
+    return JsonResponse(jobs_data, safe=False)
 
 
 # Endpoint to assign a job
-
-
+@csrf_exempt
 @require_http_methods(["POST"])
 def assign_job(request):
     data = json.loads(request.body)
@@ -33,8 +43,51 @@ def assign_job(request):
 # Endpoint to create a job
 
 
+@csrf_exempt
 @require_http_methods(["POST"])
 def create_job(request):
-    data = json.loads(request.body)
-    new_job = Jobs.objects.create(task_str=data['task_str'])
-    return JsonResponse({"job_id": new_job.job_id, "task_str": new_job.task_str})
+    try:
+        data = json.loads(request.body)
+
+        # Validate required fields
+        required_fields = ['job_id', 'task_str', 'job_time', 'assignee']
+        if not all(field in data for field in required_fields):
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+        # Validate optional fields
+        optional_fields = {'job_parts': list}
+        for field, expected_type in optional_fields.items():
+            if field in data and not isinstance(data[field], expected_type):
+                return JsonResponse({'error': f'Invalid type for {field}'}, status=400)
+
+        with transaction.atomic():
+            # Create new job with basic fields
+            new_job = Jobs(
+                job_id=data['job_id'],
+                task_str=data['task_str'],
+                job_time=data['job_time']
+            )
+
+            # Set assignee
+            try:
+                assignee = AppUser.objects.get(pk=data['assignee'])
+                new_job.assignee = assignee
+            except AppUser.DoesNotExist:
+                return JsonResponse({'error': 'Assignee not found'}, status=404)
+
+            new_job.save()
+
+            # Add job parts if present
+            if 'job_parts' in data:
+                for part_id in data['job_parts']:
+                    try:
+                        part = Parts.objects.get(pk=part_id)
+                        new_job.job_parts.add(part)
+                    except Parts.DoesNotExist:
+                        return JsonResponse({'error': f'Part ID {part_id} not found'}, status=404)
+
+            return JsonResponse({"job_id": new_job.job_id, "task_str": new_job.task_str, "job_time": new_job.job_time, "assignee": new_job.assignee.id, "job_parts": list(new_job.job_parts.values_list('id', flat=True))})
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
