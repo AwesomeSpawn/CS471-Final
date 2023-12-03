@@ -1,0 +1,81 @@
+/* JobsManagePage.css */
+.managePageContainer {
+  text-align: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.managePageContainer h1,
+h2 {
+  color: #333;
+}
+
+.formContainer {
+  margin: auto;
+  width: 80%;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 16px;
+}
+
+.dropdownLarge {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.backButton {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #d32f2f;
+}
+
+.jobsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #f3f3f3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #333;
+  color: white;
+}
+
+.backButton {
+  margin-right: 20px;
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #777;
+}

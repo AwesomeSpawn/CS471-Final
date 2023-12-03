@@ -6,20 +6,17 @@ import LoginPage from "./Components/LoginPage";
 import LandingPage from "./Components/LandingPage";
 import TimesheetPage from "./Components/TimesheetPage";
 import JobsPage from "./Components/JobsPage";
-import TimesheetManage from "./Components/TimesheetManage";
-import JobsManage from "./Components/JobsManage";
+import TimesheetManage from "./Components/TimesheetManagePage";
+import JobsManage from "./Components/JobsManagePage";
 import Cookies from 'js-cookie';
 import Jobs from './Components/JobsPage';
 import IndividualJob from './Components/IndividualJob';
-import CashierInterface from './Components/CashierInterface';
-import axios from "axios";
+import CashierInterface from './Components/CashierInterfacePage';
 
 function App() {
   const [authenticated, setAuthentication] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
   const [currJob, setJob] = useState({});
-
-  console.log(axios.post('http://LocalHost:8000/inventory', {'name':'partI', 'serial_number':112, 'quantity':12}));
 
   useEffect(() => {
     if (!authenticated) {
@@ -59,8 +56,8 @@ function App() {
           <Route path="cashier" element={<CashierInterface />} />
           <Route path="timesheet" element={authenticated ? <TimesheetPage /> : <Navigate to="/login" />} />
           <Route path="jobs" element={authenticated ? <JobsPage /> : <Navigate to="/login" />} />
-          <Route path="timesheet-manage" element={authenticated ? <TimesheetManage /> : <Navigate to="/login" />} />
-          <Route path="jobs-manage" element={authenticated ? <JobsManage /> : <Navigate to="/login" />} />
+          <Route path="timesheet_manage" element={authenticated ? <TimesheetManage /> : <Navigate to="/login" />} />
+          <Route path="jobs_manage" element={authenticated ? <JobsManage /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </div>

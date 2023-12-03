@@ -1,23 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import "./LandingPage.css";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-let employee_apps = ["jobs", "timesheet", "jobs_manage", "timesheet_manage"];
-let technician_apps = ["jobs", "timesheet"];
-let manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
-let cashier_apps = ["timesheet"];
+const employee_apps = [
+  "jobs",
+  "timesheet",
+  "jobs_manage",
+  "timesheet_manage",
+  "cashier",
+];
+const technician_apps = ["jobs", "timesheet"];
+const manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
+const cashier_apps = ["timesheet", "cashier"];
 
 function capitalizeFirstLetter(string) {
+  if (!string) return "";
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function LandingPage(props) {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState("employee");
+
+  // Function to handle user logout
+  const handleLogout = () => {
+    props.authenticateHook(false);
+    Cookies.remove("token");
+    Cookies.remove("userInfo");
+    axios.post("/logout");
+    navigate("/home");
+  };
+
+  useEffect(() => {
+    const userDataString = Cookies.get("userInfo");
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      const encodedEmail = encodeURIComponent(userData.email);
+      console.log("Decoded email:", decodeURIComponent(encodedEmail));
+      console.log("User Data:", userData);
+
+      axios
+        .get(`/api/user_data/${encodedEmail}`)
+        .then((response) => {
+          console.log("User Data from API:", response.data);
+          setUserRole(response.data.user_role);
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    } else {
+      // ... handle no user data ...
+    }
+  }, []);
+
+  // Determine which apps to show based on user role
   let apps = [];
-  switch (props.role) {
+  switch (userRole) {
     case "technician":
       apps = technician_apps;
       break;
@@ -31,17 +72,10 @@ function LandingPage(props) {
       apps = employee_apps;
   }
 
-  const handleLogout = () => {
-    props.authenticateHook(false);
-    Cookies.remove("token");
-    axios.post("http://LocalHost:8000/logout");
-    navigate("/home");
-  };
-
   return (
     <div className="landingPageContainer">
       <header>
-        <h1>Welcome to the {capitalizeFirstLetter(props.role)} Dashboard</h1>
+        <h1>Welcome to the {capitalizeFirstLetter(userRole)} Dashboard</h1>
         <button onClick={handleLogout} className="logoutButton">
           Logout
         </button>
