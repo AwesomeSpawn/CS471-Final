@@ -32,6 +32,7 @@ function LoginPage(props) {
         props.authenticateHook(true);
         props.roleHook(response.data["user_info"].role);
         nav("/landing");
+        console.log(response);
       })
       .catch(() => {
         // Handle login failure
