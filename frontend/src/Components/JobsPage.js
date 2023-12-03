@@ -4,6 +4,32 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./JobsPage.css";
 
+function JobPopup({ job, onClose }) {
+  if (!job) return null;
+
+  return (
+    <div className="jobPopup">
+      <div className="jobPopupContent">
+        <h2>Job Details</h2>
+        <p>
+          <strong>Job ID:</strong> {job.job_id}
+        </p>
+        <p>
+          <strong>Task:</strong> {job.task_str}
+        </p>
+        <p>
+          <strong>Time:</strong> {job.job_time} hours
+        </p>
+        <p>
+          <strong>Assignee ID:</strong> {job.assignee_id}
+        </p>
+        {/* Add more details as needed */}
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
 function JobRow({ job, onJobSelect }) {
   return (
     <tr className="jobRow" onClick={() => onJobSelect(job)}>
@@ -18,6 +44,7 @@ function Jobs({ token, jobHook }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -31,6 +58,7 @@ function Jobs({ token, jobHook }) {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
+          console.log(response.data);
           setJobs(response.data.jobs || []);
           setLoading(false);
         })
@@ -43,6 +71,19 @@ function Jobs({ token, jobHook }) {
       setLoading(false);
     }
   }, [token]);
+
+  const handleJobSelect = (job) => {
+    setSelectedJob(job);
+    if (typeof jobHook === "function") {
+      jobHook(job);
+    } else {
+      console.error("jobHook is not a function");
+    }
+  };
+
+  const handleClosePopup = () => {
+    setSelectedJob(null);
+  };
 
   if (loading) return <div className="loadingIndicator">Loading jobs...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -73,15 +114,13 @@ function Jobs({ token, jobHook }) {
               <JobRow
                 key={job.job_id}
                 job={job}
-                onJobSelect={() => {
-                  jobHook(job);
-                  nav("/individualjob");
-                }}
+                onJobSelect={() => handleJobSelect(job)}
               />
             ))}
           </tbody>
         </table>
       </div>
+      <JobPopup job={selectedJob} onClose={handleClosePopup} />
     </div>
   );
 }
