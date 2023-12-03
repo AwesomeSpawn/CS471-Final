@@ -12,7 +12,6 @@ const ManagePage = () => {
   const [newJobDescription, setNewJobDescription] = useState("");
   const [newJobTime, setNewJobTime] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
-  const [jobParts, setJobParts] = useState([]);
 
   const navigate = useNavigate();
 

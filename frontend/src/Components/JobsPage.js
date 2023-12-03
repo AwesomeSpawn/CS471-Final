@@ -5,27 +5,81 @@ import Cookies from "js-cookie";
 import "./JobsPage.css";
 
 function JobPopup({ job, onClose }) {
-  if (!job) return null;
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [jobStatus, setJobStatus] = useState(
+    job.completed ? "Completed" : "Not Completed"
+  );
+
+  const handleTimeSubmit = () => {
+    axios
+      .post("/api/update_job_time", {
+        job_id: job.job_id,
+        time_spent: timeSpent,
+      })
+      .then((response) => {
+        alert("Time updated successfully");
+        onClose();
+        setTimeSpent(0);
+      })
+      .catch((error) => console.error("Error updating time", error));
+  };
+
+  const handleSubmitStatus = () => {
+    axios
+      .post("/api/update_job_completion", {
+        job_id: job.job_id,
+        completed: jobStatus === "Completed",
+      })
+      .then((response) => {
+        alert("Job status updated successfully");
+        onClose();
+      })
+      .catch((error) => console.error("Error updating job status", error));
+  };
 
   return (
     <div className="jobPopup">
-      <div className="jobPopupContent">
-        <h2>Job Details</h2>
-        <p>
-          <strong>Job ID:</strong> {job.job_id}
-        </p>
-        <p>
-          <strong>Task:</strong> {job.task_str}
-        </p>
-        <p>
-          <strong>Time:</strong> {job.job_time} hours
-        </p>
-        <p>
-          <strong>Assignee ID:</strong> {job.assignee_id}
-        </p>
-        {/* Add more details as needed */}
-        <button onClick={onClose}>Close</button>
-      </div>
+      {job && (
+        <div className="jobPopupContent">
+          <h2>Job Details</h2>
+          <p>
+            <strong>Job ID:</strong> {job.job_id}
+          </p>
+          <p>
+            <strong>Task:</strong> {job.task_str}
+          </p>
+          <p>
+            <strong>Time:</strong> {job.job_time} hours
+          </p>
+          <p>
+            <strong>Assignee ID:</strong> {job.assignee_id}
+          </p>
+          <p>
+            <strong>Status:</strong>{" "}
+            {job.completed ? "Completed" : "Not Completed"}
+          </p>
+          <div>
+            <input
+              type="number"
+              value={timeSpent}
+              onChange={(e) => setTimeSpent(e.target.value)}
+            />
+            <button onClick={handleTimeSubmit}>Submit Time</button>
+
+          </div>{" "}
+          <div>
+            <select
+              value={jobStatus}
+              onChange={(e) => setJobStatus(e.target.value)}
+            >
+              <option value="Completed">Completed</option>
+              <option value="Not Completed">Not Completed</option>
+            </select>
+            <button onClick={handleSubmitStatus}>Change Status</button>
+          </div>
+          <button onClick={onClose}>Close</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -47,7 +101,7 @@ function Jobs({ token, jobHook }) {
   const [selectedJob, setSelectedJob] = useState(null);
   const nav = useNavigate();
 
-  useEffect(() => {
+  const fetchJobs = () => {
     const userDataString = Cookies.get("userInfo");
     if (userDataString) {
       const userData = JSON.parse(userDataString);
@@ -58,7 +112,6 @@ function Jobs({ token, jobHook }) {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log(response.data);
           setJobs(response.data.jobs || []);
           setLoading(false);
         })
@@ -70,6 +123,10 @@ function Jobs({ token, jobHook }) {
       setError("You must be logged in to view jobs.");
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchJobs();
   }, [token]);
 
   const handleJobSelect = (job) => {
@@ -83,6 +140,7 @@ function Jobs({ token, jobHook }) {
 
   const handleClosePopup = () => {
     setSelectedJob(null);
+    fetchJobs(); // Call fetchJobs here to refresh the job list
   };
 
   if (loading) return <div className="loadingIndicator">Loading jobs...</div>;
@@ -120,7 +178,7 @@ function Jobs({ token, jobHook }) {
           </tbody>
         </table>
       </div>
-      <JobPopup job={selectedJob} onClose={handleClosePopup} />
+      {selectedJob && <JobPopup job={selectedJob} onClose={handleClosePopup} />}
     </div>
   );
 }

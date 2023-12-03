@@ -88,3 +88,34 @@ def create_job(request):
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_job_time(request):
+    data = json.loads(request.body)
+    try:
+        job = Jobs.objects.get(job_id=data['job_id'])
+        job.time_spent = data['time_spent']
+        job.save()
+        return JsonResponse({"message": "Job time updated successfully!"})
+    except Jobs.DoesNotExist:
+        return JsonResponse({'error': 'Job not found'}, status=404)
+    except KeyError:
+        return JsonResponse({'error': 'Missing job_id or time_spent'}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_job_completion(request):
+    data = json.loads(request.body)
+    try:
+        job = Jobs.objects.get(job_id=data['job_id'])
+        completed = data['completed']
+        job.completed = completed
+        job.save()
+        return JsonResponse({"message": "Job completion status updated successfully!"})
+    except Jobs.DoesNotExist:
+        return JsonResponse({'error': 'Job not found'}, status=404)
+    except KeyError:
+        return JsonResponse({'error': 'Missing job_id or completed field'}, status=400)

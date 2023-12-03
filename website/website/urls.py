@@ -78,7 +78,8 @@ urlpatterns = [
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/', InventoryListView.as_view(), name='inventory_list'),
-    path('api/user_data/<str:email>/', login_views.get_user_data, name='get_user_data'),
+    path('api/user_data/<str:email>/',
+         login_views.get_user_data, name='get_user_data'),
     path('api/jobs/<str:email>/', login_views.get_user_jobs, name='get_user_jobs'),
     path('api/timesheets/<str:email>/',
          login_views.get_user_timesheets, name='get_user_timesheets'),
@@ -86,6 +87,9 @@ urlpatterns = [
     path('api/get_jobs', jobs_views.get_jobs, name='get_jobs'),
     path('api/assign_job', jobs_views.assign_job, name='assign_job'),
     path('api/create_job', jobs_views.create_job, name='create_job'),
+    path('api/update_job_time', jobs_views.update_job_time, name='update_job_time'),
+    path('api/update_job_completion', jobs_views.update_job_completion,
+         name='update_job_completion'),
 
 
 
