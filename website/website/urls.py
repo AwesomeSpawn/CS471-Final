@@ -80,7 +80,7 @@ urlpatterns = [
     path('api/inventory/createpart', invV.CreatePart.as_view(), name='inventory_create'),
     path('pos', POSV.POSList, name='POS-system'),
     path('api/inventory/addparts', invV.UpdatePartQuantity.as_view(), name='add_inventory'),
-    path('api/jobs/create', JOBV.CreateJob.as_view()),
+    path('api/jobs', JOBV.JobAPI.as_view()),
     path('api/jobs/assign', JOBV.AssignJob.as_view()),
     path('api/jobs/parts', JOBV.PartEstablish.as_view()),
     path('api/jobs/complete', JOBV.SetComplete.as_view()),

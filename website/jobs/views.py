@@ -7,8 +7,9 @@ from .models import Jobs
 from inventory.models import Parts
 from login.models import AppUser
 from django.shortcuts import get_object_or_404
+from django.core.serializers import serialize
 
-class CreateJob(APIView):
+class JobAPI(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
         ser = JobSerializer(data=request.data)
@@ -17,6 +18,16 @@ class CreateJob(APIView):
             if job:
                 return Response(ser.data, status=status.HTTP_201_CREATED)
             
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request):
+        usr = get_object_or_404(AppUser, user_id=int(request.data['user_id']))
+        if usr:
+            j_list = []
+            if usr.role == 'manager':
+                j_list = Jobs.objects.all()
+            else:
+                j_list = Jobs.objects.filter(assignee=request.data['user_id'])
+            return Response(serialize('json', j_list), status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
 class AssignJob(APIView):
