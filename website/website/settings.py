@@ -149,6 +149,10 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'x-api-key',
     'Content-Type',
+    'Authorization',
+    'access-control-allow-headers',
+    'access-control-allow-methods',
+    'access-control-allow-origin',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

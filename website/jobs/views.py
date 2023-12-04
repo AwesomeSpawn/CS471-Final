@@ -19,8 +19,13 @@ class JobAPI(APIView):
                 return Response(ser.data, status=status.HTTP_201_CREATED)
             
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    def get(self, request):
-        usr = get_object_or_404(AppUser, user_id=int(request.data['user_id']))
+        
+
+class GetterJobs(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def post(self, request):
+        print(request.data)
+        usr = get_object_or_404(AppUser, user_id=request.data['user_id'])
         if usr:
             j_list = []
             if usr.role == 'manager':

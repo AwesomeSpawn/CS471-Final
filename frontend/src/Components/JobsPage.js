@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./JobsPage.css";
 
-function JobPopup({ job, onClose }) {
+function JobPopup({ job, onClose, job_id }) {
   if (!job) return null;
 
   return (
@@ -12,16 +12,16 @@ function JobPopup({ job, onClose }) {
       <div className="jobPopupContent">
         <h2>Job Details</h2>
         <p>
-          <strong>Job ID:</strong> {job.job_id}
+          <strong>Job ID:</strong> {job_id}
         </p>
         <p>
-          <strong>Task:</strong> {job.task_str}
+          <strong>Task:</strong> {job.fields.task_str}
         </p>
         <p>
-          <strong>Time:</strong> {job.job_time} hours
+          <strong>Time:</strong> {job.fields.job_time} hours
         </p>
         <p>
-          <strong>Assignee ID:</strong> {job.assignee_id}
+          <strong>Assignee ID:</strong> {job.fields.assignee_id? job.fields.assignee_id: 0}
         </p>
         {/* Add more details as needed */}
         <button onClick={onClose}>Close</button>
@@ -30,10 +30,10 @@ function JobPopup({ job, onClose }) {
   );
 }
 
-function JobRow({ job, onJobSelect }) {
+function JobRow({ job, onJobSelect, job_id }) {
   return (
     <tr className="jobRow" onClick={() => onJobSelect(job)}>
-      <td>{job.job_id}</td>
+      <td>{job_id}</td>
       <td>{job.task_str}</td>
       {/* Add more job details in additional table cells */}
     </tr>
@@ -52,14 +52,14 @@ function Jobs({ token, jobHook }) {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       const encodedEmail = encodeURIComponent(userData.email);
-
+      console.log(userData.ID);
       axios
-        .get(`/api/jobs/${encodedEmail}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        .post('http://localhost:8000/api/jobs/get', {
+          'user_id':Cookies.get("userID")
         })
         .then((response) => {
-          console.log(response.data);
-          setJobs(response.data.jobs || []);
+        
+          setJobs(JSON.parse(response.data) || []);
           setLoading(false);
         })
         .catch((error) => {
@@ -91,7 +91,6 @@ function Jobs({ token, jobHook }) {
   const goBack = () => {
     nav(-1);
   };
-
   return (
     <div className="landingPageContainer">
       <header className="jobsHeader">
@@ -112,8 +111,9 @@ function Jobs({ token, jobHook }) {
           <tbody>
             {jobs.map((job) => (
               <JobRow
-                key={job.job_id}
-                job={job}
+                key={job.fields.job_id}
+                job={job.fields}
+                job_id={job.pk}
                 onJobSelect={() => handleJobSelect(job)}
               />
             ))}
