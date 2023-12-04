@@ -111,7 +111,7 @@ def get_user_data(request, email):
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-
+@permission_classes([permissions.AllowAny])
 def get_user_jobs(request, email):
     decoded_email = urllib.parse.unquote(email)
     try:
@@ -121,7 +121,7 @@ def get_user_jobs(request, email):
     except AppUser.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
-
+@permission_classes([permissions.AllowAny])
 def get_user_timesheets(request, email):
     decoded_email = urllib.parse.unquote(email)
     try:

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import "./HomePage.css"; 
+import "./HomePage.css";
 
 function HomePage() {
   const [inventory, setInventory] = useState([]);
@@ -13,10 +13,7 @@ function HomePage() {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/inventory/",
-          {
-            headers: { "x-api-key": process.env.REACT_APP_API_KEY },
-          }
+          "http://localhost:8000/api/inventory/"
         );
         setInventory(response.data);
         setLoading(false);

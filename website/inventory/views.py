@@ -6,7 +6,9 @@ from rest_framework.views import APIView
 from rest_framework import views
 from .serializers import InventoryItemSerializer
 from .models import InventoryItem
-from .permissions import HasAPIKey
+from rest_framework.decorators import permission_classes
+from rest_framework import permissions
+
 
 # Create your views here.
 class CreatePart(APIView):
@@ -24,9 +26,8 @@ class CreatePart(APIView):
 class UpdatePartQuantity:
     pass
 
-
+@permission_classes([permissions.AllowAny])
 class InventoryListView(views.APIView):
-    permission_classes = [HasAPIKey]
 
     def get(self, request):
         items = InventoryItem.objects.all()
