@@ -1,39 +1,63 @@
-import React, { useState } from 'react';
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import './App.css';
-import './Components/HomePage'
-import HomePage from './Components/HomePage';
-import LoginPage from './Components/LoginPage';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
+import HomePage from "./Components/HomePage";
+import LoginPage from "./Components/LoginPage";
 import LandingPage from "./Components/LandingPage";
-import Cookies from 'js-cookie'
-import Jobs from './Components/Jobs';
+import TimesheetPage from "./Components/TimesheetPage";
+import JobsPage from "./Components/JobsPage";
+import TimesheetManage from "./Components/TimesheetManagePage";
+import JobsManage from "./Components/JobsManagePage";
+import Cookies from 'js-cookie';
+import Jobs from './Components/JobsPage';
 import IndividualJob from './Components/IndividualJob';
-import CashierInterface from './Components/CashierInterface';
-import axios from 'axios';
-import SalesManager from './Components/SalesManager';
+import CashierInterface from './Components/CashierInterfacePage';
 
 function App() {
-  const [authenticated, setAuthenticaiton] = useState(Cookies.get('token') !== null);
+  const [authenticated, setAuthentication] = useState(Cookies.get('token') !== null);
   const [role, setRole] = useState('');
-  const [currJob, setJob] = useState('');
+  const [currJob, setJob] = useState({});
 
-  //axios.post('http://localhost:8000/api/inventory/create', {'product_name':'Part I', 'serial_number':55555, 'quantity':4, 'product_id':123, 'cost':50.5}).catch(error => console.log('initCatch: ' + error)).then(response => console.log('response: ' + response))
-  //.catch(error => console.log('initCatch: ' + error));
-  //axios.post('http://localhost:8000/api/inventory/addparts', {'product_id':123, 'change':53});
+  useEffect(() => {
+    if (!authenticated) {
+      const isAuthenticated = localStorage.getItem("authenticated");
+      if (isAuthenticated) {
+        setAuthentication(true);
+      }
+    }
+
+    if (!role) {
+      const userRole = localStorage.getItem("role");
+      if (userRole) {
+        setRole(userRole);
+      }
+    }
+  }, [authenticated, role]);
 
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
           <Route index element={<HomePage />} />
-          <Route path='home' element={<HomePage />} />
-          <Route path='*' element={<HomePage />} />
-          <Route path='login' element={<LoginPage authenticateHook={setAuthenticaiton} roleHook={setRole} />} />
-          {authenticated && <Route path='landing' element={<LandingPage role={role} authenticateHook={setAuthenticaiton}/>} />}
-          {(role === 'partpicker' || role === 'technician') && <Route path='jobs' element={<Jobs jobHook={setJob} />} />}
-          {(role === 'partpicker' || role === 'technician') && <Route path='individualjob' element={<IndividualJob job={currJob} />} />}
-          <Route path='cashier' element={<CashierInterface />} />
-          <Route path='pos' element={<SalesManager />} />
+          <Route path="home" element={<HomePage />} />
+          <Route path="*" element={<HomePage />} />
+          <Route
+            path="login"
+            element={
+              <LoginPage
+                authenticateHook={setAuthentication}
+                roleHook={setRole}
+              />
+            }
+          />
+          {authenticated && <Route path="landing" element={<LandingPage role={role} authenticateHook={setAuthentication} />} />}
+          {(role === 'partpicker' || role === 'technician') && <Route path="jobs" element={<Jobs jobHook={setJob} />} />}
+          {(role === 'partpicker' || role === 'technician') && <Route path="individualjob" element={<IndividualJob job={currJob} />} />}
+          <Route path="cashier" element={<CashierInterface />} />
+          <Route path="timesheet" element={authenticated ? <TimesheetPage /> : <Navigate to="/login" />} />
+          <Route path="jobs" element={authenticated ? <JobsPage /> : <Navigate to="/login" />} />
+          <Route path="timesheet_manage" element={authenticated ? <TimesheetManage /> : <Navigate to="/login" />} />
+          <Route path="jobs_manage" element={authenticated ? <JobsManage /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </div>

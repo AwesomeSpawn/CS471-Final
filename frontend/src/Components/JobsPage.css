@@ -1,0 +1,72 @@
+.landingPageContainer {
+  padding: 20px;
+}
+
+.jobsHeader {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tableContainer {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.jobsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.jobsTable th,
+.jobsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.jobsTable th {
+  background-color: #f4f4f4;
+}
+
+.jobRow:hover {
+  background-color: #eef;
+}
+
+.loadingIndicator,
+.error {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.backButton {
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #d32f2f;
+}
+
+.jobPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jobPopupContent {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
