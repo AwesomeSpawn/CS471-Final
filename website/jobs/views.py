@@ -39,5 +39,6 @@ class SetComplete(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
         job = Jobs.objects.get(job_id=request.data['job_id'])
+        job.job_time = int(request.data['hours'])
         job.completed = bool(request.data['complete'])
         job.save()
