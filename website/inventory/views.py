@@ -9,7 +9,7 @@ from .models import Parts
 
 # Create your views here.
 class CreatePart(APIView):
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     def post(self, request):
         serializer = PartSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):

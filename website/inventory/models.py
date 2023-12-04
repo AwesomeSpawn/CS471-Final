@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class InventoryItem(models.Model):
+'''class InventoryItem(models.Model):
     item_name = models.CharField(max_length=255)
     item_type = models.CharField(max_length=50)
     item_description = models.TextField(blank=True)
@@ -14,14 +14,14 @@ class InventoryItem(models.Model):
         db_table = "inventory"
 
     def __str__(self):
-        return self.item_name
+        return self.item_name'''
 class Product(models.Model):
-    product_id = models.IntegerField(primary_key=True)
+    product_id = models.AutoField(primary_key=True)
     product_name = models.CharField(max_length=100)
     cost = models.FloatField()
 
 class UsedBikes(Product):
-    vehicle_id = models.IntegerField(primary_key=True)
+    vehicle_id = models.AutoField(primary_key=True)
     license_plate = models.CharField(max_length=20)
     vin = models.CharField(max_length=30)
     make = models.CharField(max_length=100)

@@ -10,8 +10,7 @@ class PartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         part_obj = Parts.objects.create(product_name=validated_data['product_name'],
                                         serial_number=validated_data['serial_number'],
-                                        quantity=validated_data['quantity'],
-                                        product_id=validated_data['product_id'],
+                                        quantity_extra=validated_data['quantity'],
                                         cost=validated_data['cost'])
         part_obj.save()
         return part_obj

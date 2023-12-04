@@ -21,6 +21,7 @@ from rest_framework import routers
 from login import views
 from inventory import views as invV
 from POS import views as POSV
+from jobs import views as JOBV
 
 # Landing Page View
 
@@ -76,9 +77,13 @@ urlpatterns = [
     path('mechanic/', mechanic_page, name='mechanic'),
     path('service_manager/', service_manager_page, name='service_manager'),
     path('cashier/', cashier_page, name='cashier'),
-    path('api/inventory/create', invV.CreatePart.as_view(), name='inventory_create'),
+    path('api/inventory/createpart', invV.CreatePart.as_view(), name='inventory_create'),
     path('pos', POSV.POSList, name='POS-system'),
-    path('api/inventory/addparts', invV.UpdatePartQuantity.as_view(), name='add_inventory')
+    path('api/inventory/addparts', invV.UpdatePartQuantity.as_view(), name='add_inventory'),
+    path('api/jobs/create', JOBV.CreateJob.as_view()),
+    path('api/jobs/assign', JOBV.AssignJob.as_view()),
+    path('api/jobs/parts', JOBV.PartEstablish.as_view()),
+    path('api/jobs/complete', JOBV.SetComplete.as_view()),
 
 
     # path('api/', include(router.urls)),

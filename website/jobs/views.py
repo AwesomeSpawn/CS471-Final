@@ -5,6 +5,8 @@ from rest_framework import permissions, status
 from rest_framework.views import APIView
 from .models import Jobs
 from inventory.models import Parts
+from login.models import AppUser
+from django.shortcuts import get_object_or_404
 
 class CreateJob(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -21,19 +23,24 @@ class AssignJob(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
         job = Jobs.objects.get(job_id=request.data['job_id'])
-        job.assignee = request.data['assignee']
+        job.assignee = AppUser.objects.get(user_id=request.data['assignee'])
         job.save()
+        return Response(status=status.HTTP_200_OK)
 
 class PartEstablish(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
         job = Jobs.objects.get(job_id=request.data['job_id'])
-        job.task_str = request.data['task_str']
-        for part_info in request.data['parts']:
-            part = Parts.objects.get(serial_number=part_info['serial_number'])
-            part.quantity_extra -= int(part_info.quantity)
-            part.curr_amount_needed += int(part_info.quantity)
-            part.save()
+        if request.data['task_str']:
+            job.task_str = request.data['task_str']
+            for part_info in request.data['parts']:
+                part = get_object_or_404(Parts, serial_number=part_info['serial_number'])
+                if part_info['quantity']:
+                    part.quantity_extra -= int(part_info['quantity'])
+                    part.curr_amount_needed += int(part_info['quantity'])
+                part.save()
+        job.save()
+        return Response(status=status.HTTP_200_OK)
         
 class SetComplete(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -42,3 +49,4 @@ class SetComplete(APIView):
         job.job_time = int(request.data['hours'])
         job.completed = bool(request.data['complete'])
         job.save()
+        return Response(status=status.HTTP_200_OK)
