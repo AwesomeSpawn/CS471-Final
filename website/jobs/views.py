@@ -24,15 +24,21 @@ class JobAPI(APIView):
 class GetterJobs(APIView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request):
-        print(request.data)
-        usr = get_object_or_404(AppUser, user_id=request.data['user_id'])
-        if usr:
-            j_list = []
-            if usr.role == 'manager':
-                j_list = Jobs.objects.all()
-            else:
-                j_list = Jobs.objects.filter(assignee=request.data['user_id'])
-            return Response(serialize('json', j_list), status=status.HTTP_200_OK)
+        if request.data.get('user_id'):
+            usr = get_object_or_404(AppUser, user_id=request.data['user_id'])
+            if usr:
+                j_list = []
+                if usr.role == 'manager':
+                    j_list = Jobs.objects.all()
+                else:
+                    j_list = Jobs.objects.filter(assignee=request.data['user_id'])
+                return Response(serialize('json', j_list), status=status.HTTP_200_OK)
+        elif request.data.get('job_id'):
+            this_job = get_object_or_404(Jobs, job_id=request.data['job_id'])
+            if this_job:
+                ser = JobSerializer(this_job)
+                return Response(ser.data, status=status.HTTP_200_OK)
+
         return Response(status=status.HTTP_400_BAD_REQUEST)
     
 class AssignJob(APIView):

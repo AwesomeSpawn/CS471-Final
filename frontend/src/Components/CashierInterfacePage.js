@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import "./CashierInterface.css";
 import CashierItem from "./CashierItem";
+import axios from "axios";
 
 function CashierInterface() {
   const [total, totalHook] = useState(0.0);
-  const [items, itemHook] = useState([
-    { quantity: "0", productname: "Part", price: "10.50", ID: 0 },
-  ]);
+  const [items, itemHook] = useState([]);
   const [currJobId, currJobHook] = useState("");
   const [currMotorId, currMotorHook] = useState("");
   const [currPartId, currPartHook] = useState("");
+  const [error, errorHook] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [transactions, setTransactions] = useState([]);
   const nav = useNavigate();
@@ -38,6 +38,16 @@ function CashierInterface() {
     }
     totalHook(myTotal);
   };
+
+  const onAddJob = () =>{
+
+    axios.post('http://localhost:8000/api/jobs/get', {"job_id":currJobId}).catch((error) => {errorHook(true); console.log(error);})
+    .then((response) =>{
+      itemHook(items => [...items, response]);
+      calcTotal(response.data, 1);
+    })
+
+  }
 
   const itemDelete = (item) => {
     itemHook(items.filter((subItem) => item !== subItem));
@@ -95,7 +105,7 @@ function CashierInterface() {
             </Popup>
             <Popup trigger={<button>Jobs</button>}>
               <input type="number" onChange={onCurrJobChange}></input>
-              <button>Add</button>
+              <button onClick={onAddJob}>Add</button>
               <button>Scan</button>
             </Popup>
             <Popup trigger={<button>Parts</button>}>

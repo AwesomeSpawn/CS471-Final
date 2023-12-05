@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 
 # Create your views here.
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes([permissions.AllowAny])
 def POSList(request):
     if request.method == 'GET':
@@ -16,7 +16,12 @@ def POSList(request):
         #serializer = POSSerializers(data=sales, many=True)
         if sales:
             return Response(sales, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-    #if request.method == 'POST':
+            
+    if request.method == 'POST':
+        ser = POSSerializers(data=request.data)
+        if ser.is_valid(raise_exception=True):
+            sale = ser.create(request.data)
+            if sale:
+                return Response(ser.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
         
