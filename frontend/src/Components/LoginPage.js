@@ -26,8 +26,10 @@ function LoginPage(props) {
       })
       .then(function (response) {
         // Store user information in cookies
+        console.log(response);
         Cookies.set("token", response.data["token"]);
         Cookies.set("userInfo", JSON.stringify(response.data["user_info"]));
+        Cookies.set("userID", response.data['user_id']);
         // Update authentication and role state
         props.authenticateHook(true);
         props.roleHook(response.data["user_info"].role);

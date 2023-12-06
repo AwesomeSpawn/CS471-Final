@@ -25,7 +25,7 @@ from django.views.decorators.http import require_http_methods
 
 
 class LoggedInUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     authentication_classes = [SessionAuthentication]
 
     def get(self, request):
@@ -62,9 +62,11 @@ class UserLogin(APIView):
             user = serializer.check_user(data)
             login(request, user)
             user_data = UserSerializer(user).data
+            print(serializer.data)
             return Response({
                 'token': serializer.data.get('token'),
-                'user_info': user_data
+                'user_info': user_data,
+                'user_id':user.user_id,
             }, status=status.HTTP_200_OK)
 
 

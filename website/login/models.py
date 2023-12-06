@@ -58,6 +58,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     admin = models.BooleanField(default=False)
     first_name = models.TextField(max_length=20, default="")
     last_name = models.TextField(max_length=20, default="")
+    role = models.TextField(max_length=20, default="")
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
     ROLE_CHOICES = (
