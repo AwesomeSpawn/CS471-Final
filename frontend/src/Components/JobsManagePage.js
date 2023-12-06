@@ -5,7 +5,7 @@ import "./JobsManagePage.css";
 
 const ManagePage = () => {
   const [jobs, setJobs] = useState([]);
-  const [newJobId, setNewJobId] = useState("");
+  const [newJobTaskStr, setNewJobTaskStr] = useState("");
   const [employees, setEmployees] = useState([]);
   const [selectedJob, setSelectedJob] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -43,7 +43,7 @@ const ManagePage = () => {
     const employeeId = findUserIdByUsername(selectedEmployee);
 
     axios
-      .post("/api/jobs/assign", {
+      .post("/api/jobs/assign/", {
         job_id: selectedJob,
         employee_id: employeeId,
       })
@@ -56,27 +56,26 @@ const ManagePage = () => {
       });
   };
 
-  const doesJobIdExist = (jobId) => {
-    return jobs.some((job) => job.job_id.toString() === jobId);
+  const doesTaskStrExist = (taskStr) => {
+    return jobs.some((job) => job.task_str === taskStr);
   };
 
   const handleCreateJob = (e) => {
     e.preventDefault();
-    if (doesJobIdExist(newJobId)) {
-      alert("Job ID already exists!");
+    if (doesTaskStrExist(newJobTaskStr)) {
+      alert("Task string already exists!");
       return;
     }
     axios
-      .post("/api/jobs/create/", {
-        job_id: newJobId,
-        task_str: newJobDescription,
+      .post("/api/create_job", {
+        task_str: newJobTaskStr,
         job_time: newJobTime,
         assignee: assigneeId,
       })
       .then((response) => {
         alert("Job created successfully!");
         setJobs([...jobs, response.data]);
-        setNewJobId("");
+        setNewJobTaskStr("");
         setNewJobDescription("");
       })
       .catch((error) => console.error("Error creating job", error));
@@ -90,8 +89,8 @@ const ManagePage = () => {
       return (
         <tr key={job.job_id}>
           <td>{job.job_id}</td>
+          <td>{job.task_str}</td>
           <td>{assignedEmployee ? assignedEmployee.username : "Unassigned"}</td>
-          {/* Add more columns as needed */}
         </tr>
       );
     });
@@ -114,14 +113,14 @@ const ManagePage = () => {
       <div className="formContainer">
         <form onSubmit={handleCreateJob}>
           <label className="label">
-            Job ID:
+            Task String:
             <input
-              id="newJobId"
-              name="newJobId"
+              id="newJobTaskStr"
+              name="newJobTaskStr"
               type="text"
-              value={newJobId}
+              value={newJobTaskStr}
               className="inputField"
-              onChange={(e) => setNewJobId(e.target.value)}
+              onChange={(e) => setNewJobTaskStr(e.target.value)}
               required
             />
           </label>
@@ -186,13 +185,13 @@ const ManagePage = () => {
           <button type="submit">Assign Job</button>
         </form>
       </div>
-
       <div className="jobsTableContainer">
         <h2>Job Assignments</h2>
         <table className="jobsTable">
           <thead>
             <tr>
-              <th>Job ID</th>
+              <th>ID</th> {/* Added ID column */}
+              <th>Task String</th>
               <th>Assigned Employee</th>
             </tr>
           </thead>

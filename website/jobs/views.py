@@ -46,13 +46,9 @@ def create_job(request):
     try:
         data = json.loads(request.body)
 
-        required_fields = ['job_id', 'task_str', 'job_time', 'assignee']
+        required_fields = ['task_str', 'job_time', 'assignee']
         if not all(field in data for field in required_fields):
             return JsonResponse({'error': 'Missing required fields'}, status=400)
-
-        job_id = data.get('job_id')
-        if Jobs.objects.filter(job_id=job_id).exists():
-            return JsonResponse({'error': 'Job ID already exists'}, status=400)
 
         optional_fields = {'job_parts': list}
         for field, expected_type in optional_fields.items():
@@ -62,7 +58,6 @@ def create_job(request):
         with transaction.atomic():
 
             new_job = Jobs(
-                job_id=data['job_id'],
                 task_str=data['task_str'],
                 job_time=data['job_time']
             )
@@ -75,15 +70,7 @@ def create_job(request):
 
             new_job.save()
 
-            if 'job_parts' in data:
-                for part_id in data['job_parts']:
-                    try:
-                        part = Parts.objects.get(pk=part_id)
-                        new_job.job_parts.add(part)
-                    except Parts.DoesNotExist:
-                        return JsonResponse({'error': f'Part ID {part_id} not found'}, status=404)
-
-            return JsonResponse({"job_id": new_job.job_id, "task_str": new_job.task_str, "job_time": new_job.job_time, "assignee": new_job.assignee.user_id, "job_parts": list(new_job.job_parts.values_list('id', flat=True))})
+            return JsonResponse({'message': 'Job created successfully!'})
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
