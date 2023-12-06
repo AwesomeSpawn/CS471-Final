@@ -71,11 +71,9 @@ function CashierInterface() {
     <div className="cashierPageContainer">
       <header className="cashierHeader">
         <h1>Cashier Dashboard</h1>
-        {/* Additional header content or navigation here */}
-        <button onClick={goBack} className="backButton">
+        <button onClick={goBack} className="backButton" id="backButton">
           Back
-        </button>{" "}
-        {/* Back button */}
+        </button>
       </header>
       <div className="cashierContent">
         {items.map((item, index) => (
@@ -86,22 +84,25 @@ function CashierInterface() {
             updatefunc={calcTotal}
           />
         ))}
-        <Popup trigger={<button>New Item</button>} position="bottom right">
+        <Popup
+          trigger={<button id="newItemButton">New Item</button>}
+          position="bottom right"
+        >
           <div>
-            <Popup trigger={<button>Motorcycle</button>}>
+            <Popup trigger={<button id="motorcycleButton">Motorcycle</button>}>
               <input type="number" onChange={onCurrMotorChange}></input>
-              <button>Add</button>
-              <button>Scan</button>
+              <button id="addMotorcycleButton">Add</button>
+              <button id="scanMotorcycleButton">Scan</button>
             </Popup>
-            <Popup trigger={<button>Jobs</button>}>
+            <Popup trigger={<button id="jobsButton">Jobs</button>}>
               <input type="number" onChange={onCurrJobChange}></input>
-              <button>Add</button>
-              <button>Scan</button>
+              <button id="addJobButton">Add</button>
+              <button id="scanJobButton">Scan</button>
             </Popup>
-            <Popup trigger={<button>Parts</button>}>
+            <Popup trigger={<button id="partsButton">Parts</button>}>
               <input type="number" onChange={onCurrPartChange}></input>
-              <button>Add</button>
-              <button>Scan</button>
+              <button id="addPartButton">Add</button>
+              <button id="scanPartButton">Scan</button>
             </Popup>
           </div>
         </Popup>
@@ -112,7 +113,9 @@ function CashierInterface() {
             <option value="Other Card">Other Card</option>
           </select>
         </div>
-        <button onClick={processTransaction}>Complete Transaction</button>
+        <button onClick={processTransaction} id="completeTransactionButton">
+          Complete Transaction
+        </button>
         <p>{"Total Price: " + total}</p>
       </div>
     </div>
