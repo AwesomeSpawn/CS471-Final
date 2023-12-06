@@ -1,74 +1,121 @@
 from django.shortcuts import render
-from .serializers import JobSerializer
-from rest_framework.response import Response
-from rest_framework import permissions, status
-from rest_framework.views import APIView
-from .models import Jobs
+from django.http import JsonResponse
+from rest_framework.decorators import permission_classes
 from inventory.models import Parts
+from .models import Jobs
 from login.models import AppUser
-from django.shortcuts import get_object_or_404
-from django.core.serializers import serialize
+from django.views.decorators.http import require_http_methods
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+from rest_framework import permissions
 
-class JobAPI(APIView):
-    permission_classes = (permissions.AllowAny,)
-    def post(self, request):
-        ser = JobSerializer(data=request.data)
-        if ser.is_valid(raise_exception=True):
-            job = ser.create(request.data)
-            if job:
-                return Response(ser.data, status=status.HTTP_201_CREATED)
-            
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-        
 
-class GetterJobs(APIView):
-    permission_classes = (permissions.AllowAny,)
-    def post(self, request):
-        if request.data.get('user_id'):
-            usr = get_object_or_404(AppUser, user_id=request.data['user_id'])
-            if usr:
-                j_list = []
-                if usr.role == 'manager':
-                    j_list = Jobs.objects.all()
-                else:
-                    j_list = Jobs.objects.filter(assignee=request.data['user_id'])
-                return Response(serialize('json', j_list), status=status.HTTP_200_OK)
-        elif request.data.get('job_id'):
-            this_job = get_object_or_404(Jobs, job_id=request.data['job_id'])
-            if this_job:
-                ser = JobSerializer(this_job)
-                return Response(ser.data, status=status.HTTP_200_OK)
+@require_http_methods(["GET"])
+def get_jobs(request):
+    jobs = Jobs.objects.all()
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    
-class AssignJob(APIView):
-    permission_classes = (permissions.AllowAny,)
-    def post(self, request):
-        job = Jobs.objects.get(job_id=request.data['job_id'])
-        job.assignee = AppUser.objects.get(user_id=request.data['assignee'])
+    jobs_data = []
+    for job in jobs:
+        job_data = {
+            'job_id': job.job_id,
+            'job_time': job.job_time,
+            'assignee_id': job.assignee_id if job.assignee else None,
+            'task_str': job.task_str,
+            # TO BE ADDEd 'job_parts': list(job.job_parts.values_list('id', flat=True)),
+        }
+        jobs_data.append(job_data)
+
+    return JsonResponse(jobs_data, safe=False)
+
+
+@permission_classes([permissions.AllowAny])
+@require_http_methods(["POST"])
+def assign_job(request):
+    data = json.loads(request.body)
+    job = Jobs.objects.get(job_id=data['job_id'])
+    employee = AppUser.objects.get(user_id=data['employee_id'])
+    job.assignee = employee
+    job.save()
+    return JsonResponse({"message": "Job assigned successfully!"})
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_job(request):
+    try:
+        data = json.loads(request.body)
+
+        required_fields = ['job_id', 'task_str', 'job_time', 'assignee']
+        if not all(field in data for field in required_fields):
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+        job_id = data.get('job_id')
+        if Jobs.objects.filter(job_id=job_id).exists():
+            return JsonResponse({'error': 'Job ID already exists'}, status=400)
+
+        optional_fields = {'job_parts': list}
+        for field, expected_type in optional_fields.items():
+            if field in data and not isinstance(data[field], expected_type):
+                return JsonResponse({'error': f'Invalid type for {field}'}, status=400)
+
+        with transaction.atomic():
+
+            new_job = Jobs(
+                job_id=data['job_id'],
+                task_str=data['task_str'],
+                job_time=data['job_time']
+            )
+
+            try:
+                assignee = AppUser.objects.get(pk=data['assignee'])
+                new_job.assignee = assignee
+            except AppUser.DoesNotExist:
+                return JsonResponse({'error': 'Assignee not found'}, status=404)
+
+            new_job.save()
+
+            if 'job_parts' in data:
+                for part_id in data['job_parts']:
+                    try:
+                        part = Parts.objects.get(pk=part_id)
+                        new_job.job_parts.add(part)
+                    except Parts.DoesNotExist:
+                        return JsonResponse({'error': f'Part ID {part_id} not found'}, status=404)
+
+            return JsonResponse({"job_id": new_job.job_id, "task_str": new_job.task_str, "job_time": new_job.job_time, "assignee": new_job.assignee.user_id, "job_parts": list(new_job.job_parts.values_list('id', flat=True))})
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@permission_classes([permissions.AllowAny])
+@require_http_methods(["POST"])
+def update_job_time(request):
+    data = json.loads(request.body)
+    try:
+        job = Jobs.objects.get(job_id=data['job_id'])
+        job.time_spent = data['time_spent']
         job.save()
-        return Response(status=status.HTTP_200_OK)
+        return JsonResponse({"message": "Job time updated successfully!"})
+    except Jobs.DoesNotExist:
+        return JsonResponse({'error': 'Job not found'}, status=404)
+    except KeyError:
+        return JsonResponse({'error': 'Missing job_id or time_spent'}, status=400)
 
-class PartEstablish(APIView):
-    permission_classes = (permissions.AllowAny,)
-    def post(self, request):
-        job = Jobs.objects.get(job_id=request.data['job_id'])
-        if request.data['task_str']:
-            job.task_str = request.data['task_str']
-            for part_info in request.data['parts']:
-                part = get_object_or_404(Parts, serial_number=part_info['serial_number'])
-                if part_info['quantity']:
-                    part.quantity_extra -= int(part_info['quantity'])
-                    part.curr_amount_needed += int(part_info['quantity'])
-                part.save()
+
+@permission_classes([permissions.AllowAny])
+@require_http_methods(["POST"])
+def update_job_completion(request):
+    data = json.loads(request.body)
+    try:
+        job = Jobs.objects.get(job_id=data['job_id'])
+        completed = data['completed']
+        job.completed = completed
         job.save()
-        return Response(status=status.HTTP_200_OK)
-        
-class SetComplete(APIView):
-    permission_classes = (permissions.AllowAny,)
-    def post(self, request):
-        job = Jobs.objects.get(job_id=request.data['job_id'])
-        job.job_time = int(request.data['hours'])
-        job.completed = bool(request.data['complete'])
-        job.save()
-        return Response(status=status.HTTP_200_OK)
+        return JsonResponse({"message": "Job completion status updated successfully!"})
+    except Jobs.DoesNotExist:
+        return JsonResponse({'error': 'Job not found'}, status=404)
+    except KeyError:
+        return JsonResponse({'error': 'Missing job_id or completed field'}, status=400)

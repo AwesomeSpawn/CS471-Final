@@ -43,7 +43,7 @@ const ManagePage = () => {
     const employeeId = findUserIdByUsername(selectedEmployee);
 
     axios
-      .post("/api/assign_job", {
+      .post("/api/jobs/assign", {
         job_id: selectedJob,
         employee_id: employeeId,
       })
@@ -67,7 +67,7 @@ const ManagePage = () => {
       return;
     }
     axios
-      .post("/api/create_job", {
+      .post("/api/jobs/create/", {
         job_id: newJobId,
         task_str: newJobDescription,
         job_time: newJobTime,

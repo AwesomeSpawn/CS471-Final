@@ -2,6 +2,7 @@ from .models import Parts
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 
+
 class PartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parts
@@ -14,3 +15,9 @@ class PartSerializer(serializers.ModelSerializer):
                                         cost=validated_data['cost'])
         part_obj.save()
         return part_obj
+
+
+class UsedBikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parts
+        fields = '__all__'

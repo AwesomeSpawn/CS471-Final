@@ -13,7 +13,7 @@ function HomePage() {
     const fetchInventory = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/inventory/"
+          "http://localhost:8000/api/inventory/getusedbikes"
         );
         setInventory(response.data);
         setLoading(false);

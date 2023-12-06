@@ -97,7 +97,7 @@ def get_user_data(request, email):
 
         # Query for Jobs and Timesheet
         jobs = Jobs.objects.filter(assignee=user).values(
-            'job_id', 'job_time', 'task_str', 'job_parts')
+            'job_id', 'job_time', 'task_str') # TO BE ADDED 'job_parts')
         timesheets = Timesheet.objects.filter(employee_id=user.user_id).values(
             'hours', 'start_date', 'timesheet_id')
 
