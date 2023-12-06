@@ -8,6 +8,7 @@ import TimesheetPage from "./Components/TimesheetPage";
 import JobsPage from "./Components/JobsPage";
 import TimesheetManage from "./Components/TimesheetManagePage";
 import JobsManage from "./Components/JobsManagePage";
+import InventoryManage from "./Components/InventoryManagePage"; 
 import Cookies from 'js-cookie';
 import Jobs from './Components/JobsPage';
 import IndividualJob from './Components/IndividualJob';
@@ -58,6 +59,7 @@ function App() {
           <Route path="jobs" element={authenticated ? <JobsPage /> : <Navigate to="/login" />} />
           <Route path="timesheet_manage" element={authenticated ? <TimesheetManage /> : <Navigate to="/login" />} />
           <Route path="jobs_manage" element={authenticated ? <JobsManage /> : <Navigate to="/login" />} />
+          <Route path="inventory_manage" element={authenticated ? <InventoryManage /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -5,16 +5,10 @@ import "./LandingPage.css";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-const employee_apps = [
-  "jobs",
-  "timesheet",
-  "jobs_manage",
-  "timesheet_manage",
-  "cashier",
-];
-const technician_apps = ["jobs", "timesheet"];
-const manager_apps = ["jobs_manage", "timesheet", "timesheet_manage"];
-const cashier_apps = ["timesheet", "cashier"];
+const employee_apps = ["jobs", "jobs_manage", "cashier", "inventory_manage"];
+const technician_apps = ["jobs"];
+const manager_apps = ["jobs", "jobs_manage", "cashier", "inventory_manage"];
+const cashier_apps = ["cashier"];
 
 function capitalizeFirstLetter(string) {
   if (!string) return "";

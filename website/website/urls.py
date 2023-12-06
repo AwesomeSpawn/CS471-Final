@@ -79,8 +79,11 @@ urlpatterns = [
     path('cashier/', cashier_page, name='cashier'),
     path('api/inventory/createpart',
          invV.CreatePart.as_view(), name='inventory_create'),
+    path('api/inventory/createusedbike',
+         invV.CreateUsedBike.as_view(), name='create_used_bike'),
     path('api/inventory/getusedbikes',
          invV.GetUsedBikes.as_view(), name='get_used_bikes'),
+    path('api/inventory/getparts', invV.GetParts.as_view(), name='get_parts'),
     path('pos', POSV.POSList, name='POS-system'),
     path('api/inventory/addparts',
          invV.UpdatePartQuantity.as_view(), name='add_inventory'),
@@ -96,6 +99,7 @@ urlpatterns = [
     path('api/update_job_time', JOBV.update_job_time, name='update_job_time'),
     path('api/update_job_completion', JOBV.update_job_completion,
          name='update_job_completion'),
+
 
 
     # path('api/', include(router.urls)),
