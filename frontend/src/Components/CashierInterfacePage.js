@@ -34,7 +34,12 @@ function CashierInterface() {
 
     let myTotal = 0.0;
     for (let item of items) {
-      myTotal += parseFloat(item["quantity"]) * parseFloat(item["price"]);
+      if (!item.job_id) {
+        myTotal += parseFloat(item["quantity"]) * parseFloat(item["price"]);
+      }
+      else{
+        myTotal += 100 * parseFloat(item.job_time);
+      }
     }
     totalHook(myTotal);
   };
@@ -44,7 +49,7 @@ function CashierInterface() {
     axios.post('http://localhost:8000/api/jobs/get', {"job_id":currJobId}).catch((error) => {errorHook(true); console.log(error);})
     .then((response) =>{
       itemHook(items => [...items, response]);
-      calcTotal(response.data, 1);
+      calcTotal(response, 1);
     })
 
   }
