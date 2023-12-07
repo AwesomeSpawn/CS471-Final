@@ -1,7 +1,6 @@
 // /path/to/ManageInventory.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import InventoryItem from "./InventoryItem";
 import axios from "axios";
 
 function ManageInventory() {
@@ -102,6 +101,26 @@ function ManageInventory() {
     nav(-1);
   };
 
+  // Function to remove a used bike
+  const removeBike = async (bikeId) => {
+    try {
+      await axios.delete(`/api/inventory/deleteusedbike/${bikeId}`);
+      setUsedBikes(usedBikes.filter((bike) => bike.vehicle_id !== bikeId));
+    } catch (error) {
+      console.error("Error removing used bike:", error);
+    }
+  };
+
+  // Function to remove a part
+  const removePart = async (partId) => {
+    try {
+      await axios.delete(`/api/inventory/deletepart/${partId}`);
+      setParts(parts.filter((part) => part.id !== partId));
+    } catch (error) {
+      console.error("Error removing part:", error);
+    }
+  };
+
   return (
     <div className="inventoryPageContainer">
       <header className="inventoryHeader">
@@ -112,21 +131,73 @@ function ManageInventory() {
       </header>
       <div className="inventoryContent">
         <h2>Used Bikes</h2>
-        {usedBikes.map((bike, index) => (
-          <InventoryItem
-            key={index}
-            item={bike}
-            purchaseFunc={handlePurchase}
-          />
-        ))}
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle ID</th>
+              <th>Product Name</th>
+              <th>Cost</th>
+              <th>License Plate</th>
+              <th>VIN</th>
+              <th>Make</th>
+              <th>Model</th>
+              <th>Year</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usedBikes.map((bike) => (
+              <tr key={bike.vehicle_id}>
+                <td>{bike.vehicle_id}</td>
+                <td>{bike.product_name}</td>
+                <td>${bike.cost}</td>
+                <td>{bike.license_plate}</td>
+                <td>{bike.vin}</td>
+                <td>{bike.make}</td>
+                <td>{bike.vehicle_model}</td>
+                <td>{bike.year}</td>
+                <td>
+                  <button onClick={() => removeBike(bike.vehicle_id)}>
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <h2>Parts</h2>
-        {parts.map((part, index) => (
-          <InventoryItem
-            key={index}
-            item={part}
-            purchaseFunc={handlePurchase}
-          />
-        ))}
+        <table>
+          <thead>
+            <tr>
+              <th>Product ID</th>
+              <th>Product Name</th>
+              <th>Cost</th>
+              <th>Serial Number</th>
+              <th>Quantity Extra</th>
+              <th>Current Amount Needed</th>
+              <th>Sale</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {parts.map((part) => (
+              <tr key={part.product_id}>
+                <td>{part.product_id}</td>
+                <td>{part.product_name}</td>
+                <td>${part.cost}</td>
+                <td>{part.serial_number}</td>
+                <td>{part.quantity_extra}</td>
+                <td>{part.curr_amount_needed}</td>
+                <td>{part.sale}</td>
+                <td>
+                  <button onClick={() => removePart(part.product_id)}>
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <h2>Add Part</h2>
         <form onSubmit={addBikeToDB}>
           <input

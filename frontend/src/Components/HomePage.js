@@ -5,25 +5,25 @@ import Cookies from "js-cookie";
 import "./HomePage.css";
 
 function HomePage() {
-  const [inventory, setInventory] = useState([]);
+  const [usedBikes, setUsedBikes] = useState([]);
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
   useEffect(() => {
-    const fetchInventory = async () => {
+    const fetchUsedBikes = async () => {
       try {
         const response = await axios.get(
           "http://localhost:8000/api/inventory/getusedbikes"
         );
-        setInventory(response.data);
+        setUsedBikes(response.data);
         setLoading(false);
-        console.log("Inventory data:", response.data);
+        console.log("Used Bikes data:", response.data);
       } catch (error) {
-        console.error("Error fetching inventory:", error);
+        console.error("Error fetching used bikes:", error);
         setLoading(false);
       }
     };
-    fetchInventory();
+    fetchUsedBikes();
   }, []);
 
   const navigateToLoginOrLanding = () => {
@@ -32,7 +32,7 @@ function HomePage() {
   };
 
   if (loading) {
-    return <p>Loading inventory...</p>;
+    return <p>Loading used bikes...</p>;
   }
 
   return (
@@ -48,32 +48,36 @@ function HomePage() {
         </button>
       </header>
       <div className="inventorySection">
-        <h2>Inventory</h2>
+        <h2>Used Bikes Inventory</h2>
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Type</th>
-              <th>Price</th>
-              <th>Description</th>
-              <th>Quantity</th>
-              <th>Supplier ID</th>
-              <th>Date Added</th>
+              <th>Vehicle ID</th>
+              <th>Product Name</th>
+              <th>Cost</th>
+              <th>License Plate</th>
+              <th>VIN</th>
+              <th>Make</th>
+              <th>Model</th>
+              <th>Year</th>
               <th>Details</th>
             </tr>
           </thead>
           <tbody>
-            {inventory.map((item) => (
-              <tr key={item.id}>
-                <td>{item.item_name}</td>
-                <td>{item.item_type}</td>
-                <td>${item.price}</td>
-                <td>{item.item_description}</td>
-                <td>{item.quantity}</td>
-                <td>{item.supplier_id}</td>
-                <td>{new Date(item.date_added).toLocaleString()}</td>
+            {usedBikes.map((bike) => (
+              <tr key={bike.vehicle_id}>
+                <td>{bike.vehicle_id}</td>
+                <td>{bike.product_name}</td>
+                <td>${bike.cost}</td>
+                <td>{bike.license_plate}</td>
+                <td>{bike.vin}</td>
+                <td>{bike.make}</td>
+                <td>{bike.vehicle_model}</td>
+                <td>{bike.year}</td>
                 <td>
-                  <button onClick={() => nav(`/item/${item.id}`)}>View</button>
+                  <button onClick={() => nav(`/bike/${bike.vehicle_id}`)}>
+                    View
+                  </button>
                 </td>
               </tr>
             ))}

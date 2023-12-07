@@ -3,7 +3,7 @@ from .serializers import PartSerializer, UsedBikeSerializer, ProductSerializer
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from rest_framework.views import APIView
-from .models import Parts, Product
+from .models import Parts, Product, UsedBikes
 
 # Create your views here.
 
@@ -52,8 +52,9 @@ class GetUsedBikes(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request):
-        items = Parts.objects.filter(sale__isnull=False)
-        serializer = UsedBikeSerializer(items, many=True)
+        # Querying UsedBikes instead of Parts
+        used_bikes = UsedBikes.objects.filter(sale__isnull=False)
+        serializer = UsedBikeSerializer(used_bikes, many=True)
         return Response(serializer.data)
 
 

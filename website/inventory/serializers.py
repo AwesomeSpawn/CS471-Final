@@ -1,3 +1,4 @@
+from .models import UsedBikes, Product
 from .models import Parts, Product, UsedBikes
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
@@ -17,21 +18,21 @@ class PartSerializer(serializers.ModelSerializer):
         return part_obj
 
 
+
 class UsedBikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsedBikes
-        exclude = ('product_ptr',)  # Exclude product_ptr field
+        fields = '__all__'  # Use all fields from the UsedBikes model
 
     def create(self, validated_data):
         # Create and save Product instance separately
         product_data = {
-            'product_name': validated_data['product_name'],
-            'cost': validated_data['cost']
+            'product_name': validated_data.pop('product_name', None),
+            'cost': validated_data.pop('cost', None)
         }
         product_instance = Product.objects.create(**product_data)
 
         # Create UsedBike instance linked to the Product instance
-        # No need to explicitly set product_ptr_id as Django handles it
         used_bike_instance = UsedBikes.objects.create(
             **validated_data, product_ptr=product_instance)
         return used_bike_instance

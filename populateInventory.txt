@@ -1,7 +1,0 @@
-SQL Command to populate inventory of db
-
-INSERT INTO inventory (item_name, item_type, item_description, quantity, price, supplier_id, date_added) 
-VALUES 
-('Sample Item 1', 'Type 1', 'Description of Item 1', 100, 49.99, 1, CURRENT_TIMESTAMP),
-('Sample Item 2', 'Type 2', 'Description of Item 2', 150, 59.99, 2, CURRENT_TIMESTAMP),
-('Sample Item 3', 'Type 3', 'Description of Item 3', 200, 69.99, 3, CURRENT_TIMESTAMP);
