@@ -62,11 +62,10 @@ class UserLogin(APIView):
             user = serializer.check_user(data)
             login(request, user)
             user_data = UserSerializer(user).data
-            print(serializer.data)
             return Response({
                 'token': serializer.data.get('token'),
                 'user_info': user_data,
-                'user_id':user.user_id,
+                'user_id': user.user_id,
             }, status=status.HTTP_200_OK)
 
 
@@ -97,7 +96,7 @@ def get_user_data(request, email):
 
         # Query for Jobs and Timesheet
         jobs = Jobs.objects.filter(assignee=user).values(
-            'job_id', 'job_time', 'task_str') # TO BE ADDED 'job_parts')
+            'job_id', 'job_time', 'task_str')  # TO BE ADDED 'job_parts')
         timesheets = Timesheet.objects.filter(employee_id=user.user_id).values(
             'hours', 'start_date', 'timesheet_id')
 
@@ -113,6 +112,7 @@ def get_user_data(request, email):
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
+
 @permission_classes([permissions.AllowAny])
 def get_user_jobs(request, email):
     decoded_email = urllib.parse.unquote(email)
@@ -122,6 +122,7 @@ def get_user_jobs(request, email):
         return JsonResponse({'jobs': list(jobs)})
     except AppUser.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
+
 
 @permission_classes([permissions.AllowAny])
 def get_user_timesheets(request, email):
@@ -142,5 +143,3 @@ def get_employees(request):
     employees = AppUser.objects.filter(employee=True).values(
         'user_id', 'email', 'username', 'first_name', 'last_name', 'role')
     return JsonResponse(list(employees), safe=False)
-
-
