@@ -8,15 +8,19 @@ import TimesheetPage from "./Components/TimesheetPage";
 import JobsPage from "./Components/JobsPage";
 import TimesheetManage from "./Components/TimesheetManagePage";
 import JobsManage from "./Components/JobsManagePage";
-import InventoryManage from "./Components/InventoryManagePage"; 
-import Cookies from 'js-cookie';
-import Jobs from './Components/JobsPage';
-import IndividualJob from './Components/IndividualJob';
-import CashierInterface from './Components/CashierInterfacePage';
+import InventoryManage from "./Components/InventoryManagePage";
+import Cookies from "js-cookie";
+import Jobs from "./Components/JobsPage";
+import IndividualJob from "./Components/IndividualJob";
+import CashierInterface from "./Components/CashierInterfacePage";
+import CustomerCashier from "./Components/customer_checkout";
+import InternalPurchase from "./Components/internal_purchases";
 
 function App() {
-  const [authenticated, setAuthentication] = useState(Cookies.get('token') !== null);
-  const [role, setRole] = useState('');
+  const [authenticated, setAuthentication] = useState(
+    Cookies.get("token") !== null
+  );
+  const [role, setRole] = useState("");
   const [currJob, setJob] = useState({});
 
   useEffect(() => {
@@ -51,15 +55,62 @@ function App() {
               />
             }
           />
-          {authenticated && <Route path="landing" element={<LandingPage role={role} authenticateHook={setAuthentication} />} />}
-          {(role === 'partpicker' || role === 'technician') && <Route path="jobs" element={<Jobs jobHook={setJob} />} />}
-          {(role === 'partpicker' || role === 'technician') && <Route path="individualjob" element={<IndividualJob job={currJob} />} />}
+          {authenticated && (
+            <Route
+              path="landing"
+              element={
+                <LandingPage role={role} authenticateHook={setAuthentication} />
+              }
+            />
+          )}
+          {(role === "partpicker" || role === "technician") && (
+            <Route path="jobs" element={<Jobs jobHook={setJob} />} />
+          )}
+          {(role === "partpicker" || role === "technician") && (
+            <Route
+              path="individualjob"
+              element={<IndividualJob job={currJob} />}
+            />
+          )}
           <Route path="cashier" element={<CashierInterface />} />
-          <Route path="timesheet" element={authenticated ? <TimesheetPage /> : <Navigate to="/login" />} />
-          <Route path="jobs" element={authenticated ? <JobsPage /> : <Navigate to="/login" />} />
-          <Route path="timesheet_manage" element={authenticated ? <TimesheetManage /> : <Navigate to="/login" />} />
-          <Route path="jobs_manage" element={authenticated ? <JobsManage /> : <Navigate to="/login" />} />
-          <Route path="inventory_manage" element={authenticated ? <InventoryManage /> : <Navigate to="/login" />} />
+          <Route
+            path="timesheet"
+            element={
+              authenticated ? <TimesheetPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="jobs"
+            element={authenticated ? <JobsPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="timesheet_manage"
+            element={
+              authenticated ? <TimesheetManage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="jobs_manage"
+            element={authenticated ? <JobsManage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="inventory_manage"
+            element={
+              authenticated ? <InventoryManage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="customer_checkout"
+            element={
+              authenticated ? <CustomerCashier /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="internal_purchases"
+            element={
+              authenticated ? <InternalPurchase /> : <Navigate to="/login" />
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>
