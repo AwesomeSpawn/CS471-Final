@@ -71,7 +71,7 @@ function ManageInventory() {
 
   const addBikeToDB = async (event) => {
     event.preventDefault(); // Prevent page refresh
-    console.log(newBike)
+    console.log(newBike);
 
     try {
       const response = await axios.post(
@@ -96,26 +96,6 @@ function ManageInventory() {
 
   const goBack = () => {
     nav(-1);
-  };
-
-  // Function to remove a used bike
-  const removeBike = async (bikeId) => {
-    try {
-      await axios.delete(`/api/inventory/deleteusedbike/${bikeId}`);
-      setUsedBikes(usedBikes.filter((bike) => bike.vehicle_id !== bikeId));
-    } catch (error) {
-      console.error("Error removing used bike:", error);
-    }
-  };
-
-  // Function to remove a part
-  const removePart = async (partId) => {
-    try {
-      await axios.delete(`/api/inventory/deletepart/${partId}`);
-      setParts(parts.filter((part) => part.id !== partId));
-    } catch (error) {
-      console.error("Error removing part:", error);
-    }
   };
 
   const handleTypeSelection = (type) => {
@@ -143,7 +123,6 @@ function ManageInventory() {
               <th>Make</th>
               <th>Model</th>
               <th>Year</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -157,11 +136,6 @@ function ManageInventory() {
                 <td>{bike.make}</td>
                 <td>{bike.vehicle_model}</td>
                 <td>{bike.year}</td>
-                <td>
-                  <button onClick={() => removeBike(bike.vehicle_id)}>
-                    Remove
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -176,8 +150,6 @@ function ManageInventory() {
               <th>Serial Number</th>
               <th>Quantity Extra</th>
               <th>Current Amount Needed</th>
-              <th>Sale</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -189,12 +161,6 @@ function ManageInventory() {
                 <td>{part.serial_number}</td>
                 <td>{part.quantity_extra}</td>
                 <td>{part.curr_amount_needed}</td>
-                <td>{part.sale}</td>
-                <td>
-                  <button onClick={() => removePart(part.product_id)}>
-                    Remove
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
