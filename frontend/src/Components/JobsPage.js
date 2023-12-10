@@ -65,15 +65,15 @@ function JobPopup({ job, onClose }) {
               onChange={(e) => setTimeSpent(e.target.value)}
             />
             <button onClick={handleTimeSubmit}>Submit Time</button>
-
           </div>{" "}
           <div>
             <select
               value={jobStatus}
               onChange={(e) => setJobStatus(e.target.value)}
             >
+              <option value="Not Completed">Begun</option>
+              <option value="Not Completed">Awaiting Parts</option>
               <option value="Completed">Completed</option>
-              <option value="Not Completed">Not Completed</option>
             </select>
             <button onClick={handleSubmitStatus}>Change Status</button>
           </div>
