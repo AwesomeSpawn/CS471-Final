@@ -46,11 +46,12 @@ def create_job(request):
     try:
         data = json.loads(request.body)
 
-        required_fields = ['task_str', 'job_time', 'assignee']
+        required_fields = ['task_str', 'job_time']
         if not all(field in data for field in required_fields):
             return JsonResponse({'error': 'Missing required fields'}, status=400)
 
-        optional_fields = {'job_parts': list}
+        optional_fields = {'job_parts': list, 'assignee': (
+            int, type(None)), 'sale_id': (int, type(None))}
         for field, expected_type in optional_fields.items():
             if field in data and not isinstance(data[field], expected_type):
                 return JsonResponse({'error': f'Invalid type for {field}'}, status=400)
@@ -62,11 +63,15 @@ def create_job(request):
                 job_time=data['job_time']
             )
 
-            try:
-                assignee = AppUser.objects.get(pk=data['assignee'])
-                new_job.assignee = assignee
-            except AppUser.DoesNotExist:
-                return JsonResponse({'error': 'Assignee not found'}, status=404)
+            if 'assignee' in data and data['assignee'] is not None:
+                try:
+                    assignee = AppUser.objects.get(pk=data['assignee'])
+                    new_job.assignee = assignee
+                except AppUser.DoesNotExist:
+                    return JsonResponse({'error': 'Assignee not found'}, status=404)
+
+            if 'sale' in data and data['sale'] is not None:
+                new_job.sale_id = data['sale']
 
             new_job.save()
 

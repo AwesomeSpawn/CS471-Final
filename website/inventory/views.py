@@ -28,7 +28,7 @@ class CreatePart(APIView):
         # Update request data with product_ptr_id and sale_id
         part_data = request.data
         part_data['product_ptr'] = product.product_id
-        part_data['sale'] = sale
+        part_data['sale'] = sale if sale else None
 
         # Create Part instance using the serializer
         serializer = PartSerializer(data=part_data)

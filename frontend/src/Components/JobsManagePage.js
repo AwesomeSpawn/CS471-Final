@@ -43,7 +43,7 @@ const ManagePage = () => {
     const employeeId = findUserIdByUsername(selectedEmployee);
 
     axios
-      .post("/api/jobs/assign/", {
+      .post("api/assign_job", {
         job_id: selectedJob,
         employee_id: employeeId,
       })
@@ -66,12 +66,14 @@ const ManagePage = () => {
       alert("Task string already exists!");
       return;
     }
+    const jobData = {
+      task_str: newJobTaskStr,
+      job_time: newJobTime,
+      assignee: assigneeId,
+    };
+    console.log("Job Data:", jobData); // Added console log
     axios
-      .post("/api/create_job", {
-        task_str: newJobTaskStr,
-        job_time: newJobTime,
-        assignee: assigneeId,
-      })
+      .post("/api/create_job", jobData)
       .then((response) => {
         alert("Job created successfully!");
         setJobs([...jobs, response.data]);
@@ -138,7 +140,7 @@ const ManagePage = () => {
             <input
               type="number"
               value={assigneeId}
-              onChange={(e) => setAssigneeId(e.target.value)}
+              onChange={(e) => setAssigneeId(parseInt(e.target.value))}
               required
             />
           </label>

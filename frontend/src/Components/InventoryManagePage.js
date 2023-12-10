@@ -24,6 +24,7 @@ function ManageInventory() {
     year: 0,
     sale: null,
   }); // Add newBike state
+  const [selectedType, setSelectedType] = useState(""); // Add selectedType state
   const nav = useNavigate();
 
   // Fetch used bikes and parts on component mount
@@ -53,6 +54,7 @@ function ManageInventory() {
   const addPartToDB = async () => {
     try {
       const response = await axios.post("/api/inventory/createpart", newPart);
+
       setParts([...parts, response.data]); // Update parts state
       setNewPart({
         product_name: "",
@@ -67,7 +69,10 @@ function ManageInventory() {
     }
   };
 
-  const addBikeToDB = async () => {
+  const addBikeToDB = async (event) => {
+    event.preventDefault(); // Prevent page refresh
+    console.log(newBike)
+
     try {
       const response = await axios.post(
         "/api/inventory/createusedbike",
@@ -86,14 +91,6 @@ function ManageInventory() {
       }); // Clear newBike input
     } catch (error) {
       console.error("Error creating new bike:", error);
-    }
-  };
-
-  const handlePurchase = async (item) => {
-    try {
-      await axios.post("/api/purchase", item);
-    } catch (error) {
-      console.error("Error making purchase:", error);
     }
   };
 
@@ -119,6 +116,10 @@ function ManageInventory() {
     } catch (error) {
       console.error("Error removing part:", error);
     }
+  };
+
+  const handleTypeSelection = (type) => {
+    setSelectedType(type);
   };
 
   return (
@@ -198,64 +199,117 @@ function ManageInventory() {
             ))}
           </tbody>
         </table>
-        <h2>Add Part</h2>
-        <form onSubmit={addBikeToDB}>
-          <input
-            type="text"
-            placeholder="Product Name"
-            value={newBike.product_name}
-            onChange={(e) =>
-              setNewBike({ ...newBike, product_name: e.target.value })
-            }
-          />
-          <input
-            type="number"
-            placeholder="Cost"
-            value={newBike.cost}
-            onChange={(e) => setNewBike({ ...newBike, cost: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="License Plate"
-            value={newBike.license_plate}
-            onChange={(e) =>
-              setNewBike({ ...newBike, license_plate: e.target.value })
-            }
-          />
-          <input
-            type="text"
-            placeholder="VIN"
-            value={newBike.vin}
-            onChange={(e) => setNewBike({ ...newBike, vin: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Make"
-            value={newBike.make}
-            onChange={(e) => setNewBike({ ...newBike, make: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Vehicle Model"
-            value={newBike.vehicle_model}
-            onChange={(e) =>
-              setNewBike({ ...newBike, vehicle_model: e.target.value })
-            }
-          />
-          <input
-            type="number"
-            placeholder="Year"
-            value={newBike.year}
-            onChange={(e) => setNewBike({ ...newBike, year: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Sale"
-            value={newBike.sale}
-            onChange={(e) => setNewBike({ ...newBike, sale: e.target.value })}
-          />
-          <button type="submit">Add Used Bike</button>
-        </form>
+        <h2>Add Part or Used Bike</h2>
+        <div>
+          <button onClick={() => handleTypeSelection("part")}>Add Part</button>
+          <button onClick={() => handleTypeSelection("bike")}>
+            Add Used Bike
+          </button>
+        </div>
+        {selectedType === "part" && (
+          <form onSubmit={addPartToDB}>
+            <input
+              type="text"
+              placeholder="Product Name"
+              value={newPart.product_name}
+              onChange={(e) =>
+                setNewPart({ ...newPart, product_name: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Cost"
+              value={newPart.cost}
+              onChange={(e) => setNewPart({ ...newPart, cost: e.target.value })}
+            />
+            <input
+              type="number"
+              placeholder="Serial Number"
+              value={newPart.serial_number}
+              onChange={(e) =>
+                setNewPart({ ...newPart, serial_number: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Quantity Extra"
+              value={newPart.quantity_extra}
+              onChange={(e) =>
+                setNewPart({ ...newPart, quantity_extra: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Current Amount Needed"
+              value={newPart.curr_amount_needed}
+              onChange={(e) =>
+                setNewPart({ ...newPart, curr_amount_needed: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Location"
+              value={newPart.location}
+              onChange={(e) =>
+                setNewPart({ ...newPart, location: e.target.value })
+              }
+            />
+            <button type="submit">Add Part</button>
+          </form>
+        )}
+        {selectedType === "bike" && (
+          <form onSubmit={addBikeToDB}>
+            <input
+              type="text"
+              placeholder="Product Name"
+              value={newBike.product_name}
+              onChange={(e) =>
+                setNewBike({ ...newBike, product_name: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Cost"
+              value={newBike.cost}
+              onChange={(e) => setNewBike({ ...newBike, cost: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="License Plate"
+              value={newBike.license_plate}
+              onChange={(e) =>
+                setNewBike({ ...newBike, license_plate: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="VIN"
+              value={newBike.vin}
+              onChange={(e) => setNewBike({ ...newBike, vin: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Make"
+              value={newBike.make}
+              onChange={(e) => setNewBike({ ...newBike, make: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Vehicle Model"
+              value={newBike.vehicle_model}
+              onChange={(e) =>
+                setNewBike({ ...newBike, vehicle_model: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Year"
+              value={newBike.year}
+              onChange={(e) => setNewBike({ ...newBike, year: e.target.value })}
+            />
+            <button type="submit">Add Used Bike</button>
+          </form>
+        )}
       </div>
     </div>
   );
