@@ -84,7 +84,7 @@ urlpatterns = [
     path('api/inventory/getusedbikes',
          invV.GetUsedBikes.as_view(), name='get_used_bikes'),
     path('api/inventory/getparts', invV.GetParts.as_view(), name='get_parts'),
-    path('pos', POSV.POSList, name='POS-system'),
+    path('api/sales/pos', POSV.POSList, name='POS-system'),
     path('api/inventory/addparts',
          invV.UpdatePartQuantity.as_view(), name='add_inventory'),
     path('api/user_data/<str:email>/',

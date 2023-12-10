@@ -12,26 +12,61 @@ class CreatePart(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        serializer = PartSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            part = serializer.create(request.data)
-            if part:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        # Extract product related data
+        product_data = {
+            'product_name': request.data.get('product_name'),
+            'cost': request.data.get('cost')
+        }
+
+        # Create Product instance
+        product = Product.objects.create(**product_data)
+
+        # Get the corresponding POS Sale instance
+        sale = request.data.get('sale')
+
+        # Update request data with product_ptr_id and sale_id
+        part_data = request.data
+        part_data['product_ptr'] = product.product_id
+        part_data['sale'] = sale
+
+        # Create Part instance using the serializer
+        serializer = PartSerializer(data=part_data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateUsedBike(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
-        serializer = UsedBikeSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            used_bike = serializer.create(request.data)
-            if used_bike:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # Extract product related data
+        product_data = {
+            'product_name': request.data.get('product_name'),
+            'cost': request.data.get('cost')
+        }
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        # Create Product instance
+        product = Product.objects.create(**product_data)
+
+        # Get the corresponding POS Sale instance
+        sale = request.data.get('sale')
+
+        # Update request data with product_ptr_id and sale_id
+        used_bike_data = request.data
+        used_bike_data['product_ptr'] = product.product_id
+        used_bike_data['sale'] = sale
+
+        # Create UsedBike instance using the serializer
+        serializer = UsedBikeSerializer(data=used_bike_data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdatePartQuantity(APIView):
