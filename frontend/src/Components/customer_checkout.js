@@ -31,19 +31,22 @@ function CustomerCashier() {
   });
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [isSaleInProgress, setIsSaleInProgress] = useState(false);
-  const [saleStatus, setSaleStatus] = useState("");
+  const [saleStatus, setSaleStatus] = useState(null); // Change initial state to null
 
-  // Handle Sale Function
   const handleSale = async () => {
     setIsSaleInProgress(true);
     try {
-      productDetails.cost = productDetails.cost * -1;
+      // Correcting the cost calculation logic
+      const cost = parseFloat(productDetails.cost);
+      if (isNaN(cost) || cost <= 0) {
+        throw new Error("Invalid cost value");
+      }
+
       // Step 1: Prepare Sale Data
       const saleData = {
-        cost: productDetails.cost,
+        cost: cost * -1, // Ensure cost is negative for a sale
         credit_card: customerDetails.cardNumber,
         nameOnCard: customerDetails.name,
-        // Other required fields...
       };
 
       // Step 2: Create POS Transaction
@@ -56,6 +59,7 @@ function CustomerCashier() {
       // Step 3: Prepare Inventory Data
       let productData = {
         ...productDetails,
+        cost: cost, // Use original cost value for inventory
         sale: transactionId,
       };
 
@@ -66,14 +70,12 @@ function CustomerCashier() {
       } else if (productType === "part") {
         inventoryEndpoint = "http://localhost:8000/api/inventory/createpart";
       } else {
-        // Prepare repair data
+        // Assume default case is 'repair'
         productData = {
           ...productDetails,
+          cost: productDetails.job_time * 55, // Calculate cost for repair job
           sale: transactionId,
         };
-
-        productDetails.cost = productDetails.job_time * 55;
-        console.log(productData);
         inventoryEndpoint = "http://localhost:8000/api/create_job";
       }
 
@@ -341,6 +343,16 @@ function CustomerCashier() {
         <button disabled={isSaleInProgress} onClick={handleSale}>
           {isSaleInProgress ? "Processing..." : "Submit Sale"}
         </button>
+
+        {/* Sale Status */}
+        {saleStatus !== null && (
+          <div>
+            <h2>Sale Status</h2>
+            <p>
+              {saleStatus === "Success" ? "Sale successful" : "Sale failed"}
+            </p>
+          </div>
+        )}
 
         {/* Transaction History */}
         <div>

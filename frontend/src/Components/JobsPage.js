@@ -62,7 +62,7 @@ function JobPopup({ job, onClose }) {
             <input
               type="number"
               value={timeSpent}
-              onChange={(e) => setTimeSpent(e.target.value)}
+              onChange={(e) => setTimeSpent(parseInt(e.target.value))}
             />
             <button onClick={handleTimeSubmit}>Submit Time</button>
           </div>{" "}

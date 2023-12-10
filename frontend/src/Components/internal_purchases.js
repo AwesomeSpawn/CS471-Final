@@ -297,6 +297,14 @@ function CustomerCashier() {
           {isSaleInProgress ? "Processing..." : "Submit Sale"}
         </button>
 
+        {/* Sale Status */}
+        {saleStatus && (
+          <div>
+            <h2>Sale Status</h2>
+            <p>{saleStatus}</p>
+          </div>
+        )}
+
         {/* Transaction History */}
         <div>
           <h2>Transaction History</h2>
@@ -312,5 +320,4 @@ function CustomerCashier() {
     </div>
   );
 }
-
 export default CustomerCashier;
