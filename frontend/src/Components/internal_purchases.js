@@ -153,7 +153,7 @@ function CustomerCashier() {
   return (
     <div className="cashierPageContainer">
       <header className="cashierHeader">
-        <h1>Customer Checkout Page</h1>
+        <h1>Internal Purchases Page</h1>
         <button onClick={goBack} className="backButton" id="backButton">
           Back
         </button>
