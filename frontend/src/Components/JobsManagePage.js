@@ -79,6 +79,7 @@ const ManagePage = () => {
         setJobs([...jobs, response.data]);
         setNewJobTaskStr("");
         setNewJobDescription("");
+        window.location.reload(); // Refresh the page
       })
       .catch((error) => console.error("Error creating job", error));
   };

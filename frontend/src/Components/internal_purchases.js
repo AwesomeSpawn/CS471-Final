@@ -91,28 +91,26 @@ function CustomerCashier() {
     }
 
     try {
-      let cost = parseFloat(productDetails.cost);
-      let saleData = {};
       let inventoryEndpoint = "";
+      let saleData = {};
 
-      // For non-repair cases
       saleData = {
         credit_card: customerDetails.cardNumber,
         nameOnCard: customerDetails.name,
+        CVC: customerDetails.cvc,
+        validMonth: customerDetails.validMonth,
+        ValidDay: customerDetails.validDay,
+        cost: parseFloat(productDetails.cost),
       };
 
       // Create POS Transaction
       console.log("saleData:", saleData);
       alert("Processing POS transaction...");
-      const transactionResponse = await axios.post(
-        "http://localhost:8000/api/sales/pos",
-        saleData
-      );
+      const transactionResponse = await axios.post("/api/sales/pos", saleData);
       const transactionId = transactionResponse.data.id;
 
       const productData = {
         ...productDetails,
-        cost: cost, // Use original cost value for inventory
         sale: transactionId,
       };
 
@@ -163,8 +161,12 @@ function CustomerCashier() {
       <div className="cashierContent">
         {/* Product Type Selection */}
         <div>
-          <button onClick={() => setProductType("bike")}>Sell Used Bike</button>
-          <button onClick={() => setProductType("part")}>Sell Parts</button>
+          <button onClick={() => setProductType("bike")}>
+            Add Bike To Database
+          </button>
+          <button onClick={() => setProductType("part")}>
+            Add Part To Database
+          </button>
         </div>
 
         {/* Detailed Input */}
@@ -401,7 +403,7 @@ function CustomerCashier() {
               required
             />
             <button disabled={isSaleInProgress} onClick={handleSale}>
-              {isSaleInProgress ? "Processing..." : "Submit Sale"}
+              {isSaleInProgress ? "Processing..." : "Add To Database"}
             </button>
           </form>
         </div>
