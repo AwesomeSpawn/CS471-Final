@@ -8,20 +8,20 @@ function ManageInventory() {
   const [parts, setParts] = useState([]);
   const [newPart, setNewPart] = useState({
     product_name: "",
-    cost: 0,
-    serial_number: 0,
-    quantity_extra: 0,
-    curr_amount_needed: 0,
+    cost: "",
+    serial_number: "",
+    quantity_extra: "",
+    curr_amount_needed: "",
     sale: null,
   }); // Add newPart state
   const [newBike, setNewBike] = useState({
     product_name: "",
-    cost: 0,
+    cost: "",
     license_plate: "",
     vin: "",
     make: "",
     vehicle_model: "",
-    year: 0,
+    year: "",
     sale: null,
   }); // Add newBike state
   const [selectedType, setSelectedType] = useState(""); // Add selectedType state
@@ -58,10 +58,10 @@ function ManageInventory() {
       setParts([...parts, response.data]); // Update parts state
       setNewPart({
         product_name: "",
-        cost: 0,
-        serial_number: 0,
-        quantity_extra: 0,
-        curr_amount_needed: 0,
+        cost: "",
+        serial_number: "",
+        quantity_extra: "",
+        curr_amount_needed: "",
         sale: null,
       }); // Clear newPart input
     } catch (error) {
@@ -81,12 +81,12 @@ function ManageInventory() {
       setUsedBikes([...usedBikes, response.data]); // Update bikes state
       setNewBike({
         product_name: "",
-        cost: 0,
+        cost: "",
         license_plate: "",
         vin: "",
         make: "",
         vehicle_model: "",
-        year: 0,
+        year: "",
         sale: null,
       }); // Clear newBike input
     } catch (error) {
@@ -181,12 +181,14 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewPart({ ...newPart, product_name: e.target.value })
               }
+              required
             />
             <input
               type="number"
               placeholder="Cost"
               value={newPart.cost}
               onChange={(e) => setNewPart({ ...newPart, cost: e.target.value })}
+              required
             />
             <input
               type="number"
@@ -195,6 +197,7 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewPart({ ...newPart, serial_number: e.target.value })
               }
+              required
             />
             <input
               type="number"
@@ -203,6 +206,7 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewPart({ ...newPart, quantity_extra: e.target.value })
               }
+              required
             />
             <input
               type="number"
@@ -211,6 +215,7 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewPart({ ...newPart, curr_amount_needed: e.target.value })
               }
+              required
             />
             <input
               type="text"
@@ -219,6 +224,7 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewPart({ ...newPart, location: e.target.value })
               }
+              required
             />
             <button type="submit">Add Part</button>
           </form>
@@ -232,12 +238,14 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewBike({ ...newBike, product_name: e.target.value })
               }
+              required
             />
             <input
               type="number"
               placeholder="Cost"
               value={newBike.cost}
               onChange={(e) => setNewBike({ ...newBike, cost: e.target.value })}
+              required
             />
             <input
               type="text"
@@ -246,18 +254,21 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewBike({ ...newBike, license_plate: e.target.value })
               }
+              required
             />
             <input
               type="text"
               placeholder="VIN"
               value={newBike.vin}
               onChange={(e) => setNewBike({ ...newBike, vin: e.target.value })}
+              required
             />
             <input
               type="text"
               placeholder="Make"
               value={newBike.make}
               onChange={(e) => setNewBike({ ...newBike, make: e.target.value })}
+              required
             />
             <input
               type="text"
@@ -266,12 +277,14 @@ function ManageInventory() {
               onChange={(e) =>
                 setNewBike({ ...newBike, vehicle_model: e.target.value })
               }
+              required
             />
             <input
               type="number"
               placeholder="Year"
               value={newBike.year}
               onChange={(e) => setNewBike({ ...newBike, year: e.target.value })}
+              required
             />
             <button type="submit">Add Used Bike</button>
           </form>
