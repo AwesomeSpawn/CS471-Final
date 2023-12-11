@@ -36,16 +36,16 @@ VALUES
     (1, 'ABC123', 'VIN12345678901234', 'Honda', 'CBR500R', 2019, 1),
     (2, 'XYZ789', 'VIN98765432109876', 'Yamaha', 'YZF-R3', 2020, 2),
     (3, 'LMN456', 'VIN45678901234567', 'Kawasaki', 'Ninja 650', 2021, 3),
-    (7, 'DEF123', 'VIN12345678901235', 'Harley Davidson', 'Iron 883', 2018, 7),
-    (8, 'GHI789', 'VIN98765432109877', 'Indian', 'Scout Bobber', 2019, 8),
-    (9, 'JKL456', 'VIN45678901234568', 'BMW', 'G 310 R', 2020, 9);
+    (4, 'DEF123', 'VIN12345678901235', 'Harley Davidson', 'Iron 883', 2018, 4),
+    (5, 'GHI789', 'VIN98765432109877', 'Indian', 'Scout Bobber', 2019, 5),
+    (6, 'JKL456', 'VIN45678901234568', 'BMW', 'G 310 R', 2020, 6);
 
 INSERT INTO "inventory_parts"
     ("product_ptr_id", "serial_number", "curr_amount_needed", "sale_id", "quantity_extra", "location")
 VALUES
-    (4, 123456, 10, NULL, 5, 'Room A'),
-    (5, 234567, 15, NULL, 8, 'Room B'),
-    (6, 345678, 20, NULL, 12, 'Room C'),
+    (7, 123456, 10, NULL, 5, 'Room A'),
+    (8, 234567, 15, NULL, 8, 'Room B'),
+    (9, 345678, 20, NULL, 12, 'Room C'),
     (10, 123457, 15, NULL, 6, 'Room D'),
     (11, 234568, 20, NULL, 9, 'Room E'),
     (12, 345679, 25, NULL, 13, 'Room F');
@@ -64,29 +64,29 @@ SET "sale_id" = 3
 WHERE "product_ptr_id" = 3;
 
 UPDATE "inventory_usedbikes"
-SET "sale_id" = 7
-WHERE "product_ptr_id" = 7;
-
-UPDATE "inventory_usedbikes"
-SET "sale_id" = 8
-WHERE "product_ptr_id" = 8;
-
-UPDATE "inventory_usedbikes"
-SET "sale_id" = 9
-WHERE "product_ptr_id" = 9;
-
--- Associate the parts with the POS sales
-UPDATE "inventory_parts"
 SET "sale_id" = 4
 WHERE "product_ptr_id" = 4;
 
-UPDATE "inventory_parts"
+UPDATE "inventory_usedbikes"
 SET "sale_id" = 5
 WHERE "product_ptr_id" = 5;
 
-UPDATE "inventory_parts"
+UPDATE "inventory_usedbikes"
 SET "sale_id" = 6
 WHERE "product_ptr_id" = 6;
+
+-- Associate the parts with the POS sales
+UPDATE "inventory_parts"
+SET "sale_id" = 7
+WHERE "product_ptr_id" = 7;
+
+UPDATE "inventory_parts"
+SET "sale_id" = 8
+WHERE "product_ptr_id" = 8;
+
+UPDATE "inventory_parts"
+SET "sale_id" = 9
+WHERE "product_ptr_id" = 9;
 
 UPDATE "inventory_parts"
 SET "sale_id" = 10
