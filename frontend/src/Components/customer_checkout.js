@@ -20,7 +20,6 @@ function CustomerCashier() {
     // Repair specific details
     task_str: "",
     job_time: "",
-    assignee: null,
   });
   const [customerDetails, setCustomerDetails] = useState({
     name: "",
@@ -81,6 +80,7 @@ function CustomerCashier() {
       let saleData = {};
       let inventoryEndpoint = "";
       let productData = {};
+      let saleId = null; // Variable to store the sale ID
 
       // Separate handling for 'repair' case
       if (productType === "repair") {
@@ -89,13 +89,22 @@ function CustomerCashier() {
         cost = productDetails.job_time * 55;
 
         // Set inventory endpoint for repair job
-        inventoryEndpoint = "http://localhost:8000/api/create_job";
+        inventoryEndpoint = "/api/create_job";
 
         // Prepare product data for inventory update
         productData = {
           ...productDetails,
           cost: cost, // Cost based on job time
           sale: null, // Sale ID will be set after POS transaction
+        };
+
+        saleData = {
+          credit_card: customerDetails.cardNumber,
+          nameOnCard: customerDetails.name,
+          CVC: customerDetails.cvc,
+          validMonth: customerDetails.validMonth,
+          ValidDay: customerDetails.validDay,
+          cost: cost,
         };
 
         // Skip POS transaction step until inventory is updated
@@ -110,56 +119,76 @@ function CustomerCashier() {
           cost: cost,
         };
 
-        // Create POS Transaction
-        console.log("saleData:", saleData);
-        alert("Processing POS transaction...");
-        const transactionResponse = await axios.post(
-          "/api/sales/pos",
-          saleData
-        );
-        const transactionId = transactionResponse.data.id;
-
-        if (productType === "bike") {
-          inventoryEndpoint = "/api/inventory/sellproduct";
-          productData = productDetails.bike;
-          productDetails.quantity = 1;
-        } else if (productType === "part") {
-          inventoryEndpoint = "/api/inventory/sellproduct";
-          productData = productDetails.part;
-          productDetails.quantity = parseInt(productDetails.quantity);
-        }
-      }
-
-      // If it's a repair, now create the POS transaction
-      if (productType === "repair") {
-        // Update product data with sale ID from inventory response
-        const saleId = inventoryResponse.data.saleId; // Assuming the sale ID is returned from the inventory update
-        saleData = {
-          credit_card: customerDetails.cardNumber,
-          nameOnCard: customerDetails.name,
+        productData = {
+          ...productDetails,
+          cost: cost,
+          sale: null,
         };
 
         // Create POS Transaction
         console.log("saleData:", saleData);
         alert("Processing POS transaction...");
-        await axios.post("/api/sales/pos", {
-          ...saleData,
-          sale: saleId,
-        });
+        await axios.post("/api/sales/pos", saleData);
       }
 
-      // Update inventory
-      alert("Processing inventory update...");
-      console.log("productData:", productData);
-      const inventoryResponse = await axios.post(inventoryEndpoint, {
-        product_id: productData,
-        quantity: productDetails.quantity,
-      });
+      // If it's a repair, now create the POS transaction
+      if (productType === "repair") {
+        // Create POS Transaction
+        console.log("saleData:", saleData);
+        alert("Processing POS transaction...");
+        saleId = await axios.post("/api/sales/pos", saleData);
+        console.log("saleId.data.id:", saleId.data.id);
+        const { task_str, job_time } = productData;
+
+        productData = {
+          task_str,
+          job_time,
+          sale_id: saleId.data.id,
+        };
+
+        alert("Processing inventory update...");
+        console.log("productData:", productData);
+        const inventoryResponse = await axios.post(
+          inventoryEndpoint,
+          productData
+        );
+      }
+
+      if (productType === "bike") {
+        inventoryEndpoint = "/api/inventory/sellproduct";
+
+        productData = {
+          product_id: parseInt(productDetails.bike, 10),
+          quantity: parseInt(1),
+        };
+
+        alert("Processing inventory update...");
+        console.log("productData:", productData);
+        await axios.post(inventoryEndpoint, productData);
+      }
+
+      if (productType === "part") {
+        inventoryEndpoint = "/api/inventory/sellproduct";
+        productData = productDetails.part;
+        productDetails.quantity = parseInt(productDetails.quantity);
+
+        productData = {
+          product_id: parseInt(productData),
+          quantity: productDetails.quantity,
+        };
+
+        alert("Processing inventory update...");
+        console.log("productData:", productData);
+        const inventoryResponse = await axios.post(
+          inventoryEndpoint,
+          productData
+        );
+      }
 
       // Set sale status to success
       setSaleStatus("Success");
       alert("Sale successful!");
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.error("Error in handleSale:", error);
       setSaleStatus("Failed");
@@ -253,6 +282,8 @@ function CustomerCashier() {
                           </option>
                         );
                       }
+                      // Save the vehicle ID to productDetails.bike
+                      productDetails.bike = item.vehicle_id;
                       return null; // Return null if the product name is "SOLD"
                     })}
                   </select>
@@ -267,7 +298,10 @@ function CustomerCashier() {
                             item.vehicle_id === parseInt(productDetails.bike) &&
                             item.product_name !== "SOLD" // Check if the product name is not "SOLD"
                         );
-                        return item ? (item.cost * 1.25).toFixed(2) : "";
+                        const price = item ? (item.cost * 1.25).toFixed(2) : "";
+                        // Save the price to productDetails.cost
+                        productDetails.cost = price;
+                        return price;
                       })()}
                   </p>
                 </div>
@@ -449,18 +483,6 @@ function CustomerCashier() {
               {isSaleInProgress ? "Processing..." : "Submit Sale"}
             </button>
           </form>
-        </div>
-
-        {/* Transaction History */}
-        <div>
-          <h2>Transaction History</h2>
-          <ul>
-            {transactionHistory.map((transaction, index) => (
-              <li key={index}>
-                {transaction.product.name} - ${transaction.product.cost}
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

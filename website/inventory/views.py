@@ -127,25 +127,34 @@ class SellProductView(APIView):
         if not quantity:
             return Response({"error": "quantity is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        product = get_object_or_404(Product, pk=product_id)
+        try:
+            product = Product.objects.get(pk=product_id)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Check if the product is a part
         if Parts.objects.filter(product_ptr_id=product_id).exists():
             # If there are extras, decrement the quantity_extra
-            part = Parts.objects.get(product_ptr_id=product_id)
-            if part.quantity_extra >= quantity:
-                part.quantity_extra -= quantity
-                part.save()
-            else:
-                return Response({"error": "Part is out of stock"}, status=status.HTTP_400_BAD_REQUEST)
-            serializer = PartSerializer(part)
+            try:
+                part = Parts.objects.get(product_ptr_id=product_id)
+                if part.quantity_extra >= quantity:
+                    part.quantity_extra -= quantity
+                    part.save()
+                else:
+                    return Response({"error": "Part is out of stock"}, status=status.HTTP_400_BAD_REQUEST)
+                serializer = PartSerializer(part)
+            except Parts.DoesNotExist:
+                return Response({"error": "Part not found"}, status=status.HTTP_404_NOT_FOUND)
         # Check if the product is a used bike
         elif UsedBikes.objects.filter(product_ptr_id=product_id).exists():
             # Rename the product to "SOLD"
-            used_bike = UsedBikes.objects.get(product_ptr_id=product_id)
-            used_bike.product_name = "SOLD"
-            used_bike.save()
-            serializer = UsedBikeSerializer(used_bike)
+            try:
+                used_bike = UsedBikes.objects.get(product_ptr_id=product_id)
+                used_bike.product_name = "SOLD"
+                used_bike.save()
+                serializer = UsedBikeSerializer(used_bike)
+            except UsedBikes.DoesNotExist:
+                return Response({"error": "Used bike not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({"error": "Invalid product type"}, status=status.HTTP_400_BAD_REQUEST)
 

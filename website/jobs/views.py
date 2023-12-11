@@ -47,14 +47,16 @@ def create_job(request):
         data = json.loads(request.body)
 
         required_fields = ['task_str', 'job_time']
-        if not all(field in data for field in required_fields):
-            return JsonResponse({'error': 'Missing required fields'}, status=400)
+        missing_fields = [
+            field for field in required_fields if field not in data]
+        if missing_fields:
+            return JsonResponse({'error': f'Missing required fields: {", ".join(missing_fields)}'}, status=400)
 
         optional_fields = {'job_parts': list, 'assignee': (
             int, type(None)), 'sale_id': (int, type(None))}
         for field, expected_type in optional_fields.items():
             if field in data and not isinstance(data[field], expected_type):
-                return JsonResponse({'error': f'Invalid type for {field}'}, status=400)
+                return JsonResponse({'error': f'Invalid type for {field}. Expected {expected_type}, got {type(data[field])}'}, status=400)
 
         with transaction.atomic():
 
@@ -70,8 +72,8 @@ def create_job(request):
                 except AppUser.DoesNotExist:
                     return JsonResponse({'error': 'Assignee not found'}, status=404)
 
-            if 'sale' in data and data['sale'] is not None:
-                new_job.sale_id = data['sale']
+            if 'sale_id' in data and data['sale_id'] is not None:
+                new_job.sale_id = data['sale_id']
 
             new_job.save()
 
@@ -79,7 +81,7 @@ def create_job(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
 
 
 @permission_classes([permissions.AllowAny])
