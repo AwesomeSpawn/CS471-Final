@@ -1,3 +1,6 @@
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
+from .models import Product, UsedBikes, Parts
 from django.shortcuts import render
 from .serializers import PartSerializer, UsedBikeSerializer, ProductSerializer
 from rest_framework.response import Response
@@ -109,3 +112,41 @@ class GetProducts(APIView):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
+
+
+class SellProductView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        product_id = request.data.get('product_id')
+        quantity = request.data.get('quantity')
+
+        if not product_id:
+            return Response({"error": "product_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not quantity:
+            return Response({"error": "quantity is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        product = get_object_or_404(Product, pk=product_id)
+
+        # Check if the product is a part
+        if Parts.objects.filter(product_ptr_id=product_id).exists():
+            # If there are extras, decrement the quantity_extra
+            part = Parts.objects.get(product_ptr_id=product_id)
+            if part.quantity_extra >= quantity:
+                part.quantity_extra -= quantity
+                part.save()
+            else:
+                return Response({"error": "Part is out of stock"}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = PartSerializer(part)
+        # Check if the product is a used bike
+        elif UsedBikes.objects.filter(product_ptr_id=product_id).exists():
+            # Rename the product to "SOLD"
+            used_bike = UsedBikes.objects.get(product_ptr_id=product_id)
+            used_bike.product_name = "SOLD"
+            used_bike.save()
+            serializer = UsedBikeSerializer(used_bike)
+        else:
+            return Response({"error": "Invalid product type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
