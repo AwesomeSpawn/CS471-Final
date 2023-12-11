@@ -22,7 +22,7 @@ def get_jobs(request):
             'job_time': job.job_time,
             'assignee_id': job.assignee_id if job.assignee else None,
             'task_str': job.task_str,
-            # TO BE ADDEd 'job_parts': list(job.job_parts.values_list('id', flat=True)),
+            'completed': job.completed,
         }
         jobs_data.append(job_data)
 
