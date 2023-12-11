@@ -1,16 +1,17 @@
 # Setting Up Project
-Begin by installing Python 3.11 onto your computer
+Begin by installing Python 3.12, pip and node.js onto your computer
 
 Once you have your Python development environment ready, clone this repository.
 
-Then install Django 4.2.6
+Then open 2 terminals and navigate to website and frontend folders
 
-For django setup tutorial, refer to this: 
-https://docs.djangoproject.com/en/4.2/intro/tutorial01/
+On the frontend terminal run npm install
 
-To verify that everything works, run this command:
-`python manage.py runserver`
+On website terminal run:
+pip install pipenv
+pipenv shell
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
 
-Ensure you run that command in the outermost "Website" directoy
-
-Add to this file as needed for setup instructions
+then on frontend terminal run npm start
