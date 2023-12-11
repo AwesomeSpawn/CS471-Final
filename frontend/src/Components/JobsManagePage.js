@@ -17,7 +17,7 @@ const ManagePage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/get_jobs")
+      .get("http://127.0.0.1:8000/api/get_jobs")
       .then((response) => {
         console.log("Jobs:", response.data);
         setJobs(response.data);
@@ -25,7 +25,7 @@ const ManagePage = () => {
       .catch((error) => console.error("Error fetching jobs", error));
 
     axios
-      .get("/api/get_employees")
+      .get("http://127.0.0.1:8000/api/get_employees")
       .then((response) => {
         console.log("Employees:", response.data);
         setEmployees(response.data);
@@ -73,7 +73,7 @@ const ManagePage = () => {
     };
     console.log("Job Data:", jobData); // Added console log
     axios
-      .post("/api/create_job", jobData)
+      .post("http://127.0.0.1:8000/api/create_job", jobData)
       .then((response) => {
         alert("Job created successfully!");
         setJobs([...jobs, response.data]);

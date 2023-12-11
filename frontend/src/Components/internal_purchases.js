@@ -106,7 +106,7 @@ function CustomerCashier() {
       // Create POS Transaction
       console.log("saleData:", saleData);
       alert("Processing POS transaction...");
-      const transactionResponse = await axios.post("/api/sales/pos", saleData);
+      const transactionResponse = await axios.post("http://127.0.0.1/api/sales/pos", saleData);
       const transactionId = transactionResponse.data.id;
 
       const productData = {

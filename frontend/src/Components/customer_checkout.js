@@ -89,7 +89,7 @@ function CustomerCashier() {
         cost = productDetails.job_time * 55;
 
         // Set inventory endpoint for repair job
-        inventoryEndpoint = "/api/create_job";
+        inventoryEndpoint = "http://127.0.0.1:8000/api/create_job";
 
         // Prepare product data for inventory update
         productData = {
@@ -128,7 +128,7 @@ function CustomerCashier() {
         // Create POS Transaction
         console.log("saleData:", saleData);
         alert("Processing POS transaction...");
-        await axios.post("/api/sales/pos", saleData);
+        await axios.post("http://127.0.0.1:8000/api/sales/pos", saleData);
       }
 
       // If it's a repair, now create the POS transaction
@@ -136,7 +136,7 @@ function CustomerCashier() {
         // Create POS Transaction
         console.log("saleData:", saleData);
         alert("Processing POS transaction...");
-        saleId = await axios.post("/api/sales/pos", saleData);
+        saleId = await axios.post("http://127.0.0.1:8000/api/sales/pos", saleData);
         console.log("saleId.data.id:", saleId.data.id);
         const { task_str, job_time } = productData;
 
@@ -155,7 +155,7 @@ function CustomerCashier() {
       }
 
       if (productType === "bike") {
-        inventoryEndpoint = "/api/inventory/sellproduct";
+        inventoryEndpoint = "http://127.0.0.1:8000/api/inventory/sellproduct";
 
         productData = {
           product_id: parseInt(productDetails.bike, 10),

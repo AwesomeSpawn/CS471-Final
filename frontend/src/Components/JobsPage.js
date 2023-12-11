@@ -12,7 +12,7 @@ function JobPopup({ job, onClose }) {
 
   const handleTimeSubmit = () => {
     axios
-      .post("/api/update_job_time", {
+      .post("http://127.0.0.1:8000/api/update_job_time", {
         job_id: job.job_id,
         time_spent: timeSpent,
       })
@@ -26,7 +26,7 @@ function JobPopup({ job, onClose }) {
 
   const handleSubmitStatus = () => {
     axios
-      .post("/api/update_job_completion", {
+      .post("http://127.0.0.1:8000/api/update_job_completion", {
         job_id: job.job_id,
         completed: jobStatus === "Completed",
       })
@@ -106,9 +106,8 @@ function Jobs({ token, jobHook }) {
     if (userDataString) {
       const userData = JSON.parse(userDataString);
       const encodedEmail = encodeURIComponent(userData.email);
-
       axios
-        .get(`/api/jobs/${encodedEmail}`, {
+        .get(`http://127.0.0.1:8000/api/jobs/${encodedEmail}/`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {

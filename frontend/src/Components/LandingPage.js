@@ -24,7 +24,7 @@ function LandingPage(props) {
     props.authenticateHook(false);
     Cookies.remove("token");
     Cookies.remove("userInfo");
-    axios.post("/logout");
+    axios.post("http://127.0.0.1:8000/logout");
     navigate("/home");
   };
 
@@ -37,7 +37,7 @@ function LandingPage(props) {
       console.log("User Data:", userData);
 
       axios
-        .get(`/api/user_data/${encodedEmail}`)
+        .get(`http://127.0.0.1:8000/api/user_data/${encodedEmail}`)
         .then((response) => {
           console.log("User Data from API:", response.data);
           setUserRole(response.data.user_role);

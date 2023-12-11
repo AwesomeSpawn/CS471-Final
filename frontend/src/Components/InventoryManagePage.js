@@ -31,7 +31,7 @@ function ManageInventory() {
   useEffect(() => {
     const fetchUsedBikes = async () => {
       try {
-        const response = await axios.get("/api/inventory/getusedbikes");
+        const response = await axios.get("http://127.0.0.1:8000/api/inventory/getusedbikes");
         setUsedBikes(response.data);
       } catch (error) {
         console.error("Error fetching used bikes:", error);
@@ -40,7 +40,7 @@ function ManageInventory() {
 
     const fetchParts = async () => {
       try {
-        const response = await axios.get("/api/inventory/getparts");
+        const response = await axios.get("http://127.0.0.1:8000/api/inventory/getparts");
         setParts(response.data);
       } catch (error) {
         console.error("Error fetching parts:", error);
@@ -53,7 +53,7 @@ function ManageInventory() {
 
   const addPartToDB = async () => {
     try {
-      const response = await axios.post("/api/inventory/createpart", newPart);
+      const response = await axios.post("http://127.0.0.1:8000/api/inventory/createpart", newPart);
 
       setParts([...parts, response.data]); // Update parts state
       setNewPart({
@@ -75,7 +75,7 @@ function ManageInventory() {
 
     try {
       const response = await axios.post(
-        "/api/inventory/createusedbike",
+        "http://127.0.0.1:8000/api/inventory/createusedbike",
         newBike
       );
       setUsedBikes([...usedBikes, response.data]); // Update bikes state

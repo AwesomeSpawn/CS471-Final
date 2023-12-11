@@ -11,6 +11,7 @@ from django.db import transaction
 from rest_framework import permissions
 
 
+@permission_classes([permissions.AllowAny])
 @require_http_methods(["GET"])
 def get_jobs(request):
     jobs = Jobs.objects.all()

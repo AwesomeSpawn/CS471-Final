@@ -16,7 +16,7 @@ function TimesheetPage() {
       const encodedEmail = encodeURIComponent(userData.email);
 
       axios
-        .get(`/api/timesheets/${encodedEmail}`)
+        .get(`http://127.0.0.1:8000/api/timesheets/${encodedEmail}`)
         .then((response) => {
           setTimesheets(response.data.timesheets || []);
           setLoading(false);
