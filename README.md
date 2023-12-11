@@ -8,10 +8,15 @@ Then open 2 terminals and navigate to website and frontend folders
 On the frontend terminal run npm install
 
 On website terminal run:
-pip install pipenv\n
-pipenv shell\n
-python manage.py makemigrations\n
-python manage.py migrate\n
-python manage.py runserver\n
+
+pip install pipenv
+
+pipenv shell
+
+python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver
 
 then on frontend terminal run npm start
