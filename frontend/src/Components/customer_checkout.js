@@ -188,7 +188,7 @@ function CustomerCashier() {
       // Set sale status to success
       setSaleStatus("Success");
       alert("Sale successful!");
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Error in handleSale:", error);
       setSaleStatus("Failed");
